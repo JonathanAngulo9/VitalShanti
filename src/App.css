@@ -1,4 +1,7 @@
 #root {
+  --color-primary: #A88BEB;   /* Morado suave */
+  --color-secondary: #B9FBC0; /* Verde claro suave */
+  --color-text: #ffffff; /*Blanco para contraste*/
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
@@ -39,4 +42,25 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/*Botnes morados*/
+.custom-btn {
+  background-color: var(--color-primary);
+  color: var(--color-text);
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.custom-btn:hover {
+  background-color: #9276d8; /* tono más oscuro del morado para el hover */
+}
+
+/*Botones verdes*/
+.custom-btn2 {
+  background-color: var(--color-secondary);
+  color: #333;
+}
+.custom-btn2:hover {
+  background-color: #a1e7aa;
 }

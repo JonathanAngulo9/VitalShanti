@@ -26,8 +26,13 @@ function Login() {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
 
-        // Redirigir al dashboard
-        navigate('/dashboard');
+        // Redirigir en base al rol del usuario
+        if (data.user.rol === "Instructor") {
+          navigate("/dashboard/instructor");
+        } else if (data.user.rol === "Paciente"){
+          navigate("/dashboard/paciente");
+        }
+
       } else {
         setError(data.message || 'Error en autenticación');
       }
@@ -73,8 +78,15 @@ function Login() {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary w-100">Iniciar sesión</button>
+          <button type="submit" className="btn custom-btn2 w-100">Iniciar sesión</button>
         </form>
+        <div className="mt-3 text-center">
+          <small>
+            ¿No tienes una cuenta? <br />
+            <a href="/register/instructor" className="text-decoration-none">Regístrate como Instructor</a> o{' '}
+            <a href="/register/paciente" className="text-decoration-none">como Paciente</a>
+          </small>
+        </div>
       </div>
     </div>
   );
