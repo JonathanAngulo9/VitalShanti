@@ -5,7 +5,7 @@ import VerSesiones from '../paciente/RegistrarSesion';
 
 function DashboardPaciente() {
   return (
-    <div className="d-flex" style={{ height: '100vh' }}>
+    <div className="d-flex position-absolute top-0 start-0 w-100" style={{ height: '100vh' }}>
       {/* Zona Roja - Navbar Lateral */}
       <div className="bg-primary text-white p-3" style={{ width: '250px' }}>
         <h4>Paciente</h4>
