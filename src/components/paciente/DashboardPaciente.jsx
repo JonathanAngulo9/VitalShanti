@@ -19,7 +19,7 @@ function DashboardPaciente() {
       <div className="flex-grow-1 d-flex flex-column">
         {/* Zona Verde - Imagen decorativa */}
         <div className="p-3 bg-light border-bottom text-center">
-          <img src="\src\images\logo.png" alt="Header" style={{ maxHeight: '100px' }} />
+          <img src="\src\images\banner.png" alt="Header" style={{ height: '175px' , width: '100%'}} />
         </div>
 
         {/* Zona Naranja - Contenido Dinámico */}
