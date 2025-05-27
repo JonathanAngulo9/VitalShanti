@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import GestionPacientes from '../instructor/GestionPacientes';
 import banner from '/src/images/banner.png';
+import GestionPacientes from './GestionPacientes';
+import CrearRutina from './CrearRutina';
 
 function DashboardInstructor() {
   const [vistaActual, setVistaActual] = useState("pacientes_lista");
@@ -11,6 +12,8 @@ function DashboardInstructor() {
         return <GestionPacientes vista="lista" />;
       case "pacientes_crear":
         return <GestionPacientes vista="crear" />;
+      case 'rutinas':
+        return <CrearRutina />;
       default:
         return <p>Seleccione una opción del menú.</p>;
     }
@@ -34,18 +37,22 @@ function DashboardInstructor() {
           >
             ➕ Añadir Paciente
           </button>
+          <button
+            onClick={() => setVistaActual('rutinas')}
+            className={`nav-link btn btn-link text-start text-white ${vistaActual === 'rutinas' ? 'fw-bold' : ''}`}
+          >
+            📋 Crear Rutinas
+          </button>
         </nav>
-
       </div>
 
-      {/* Zona Verde y Naranja */}
+      {/* Contenido principal */}
       <div className="flex-grow-1 d-flex flex-column">
-        {/* Zona Verde - Imagen decorativa */}
+        {/* Banner */}
         <div className="p-3 bg-light border-bottom text-center">
-          <img src={banner} alt="Header" style={{ height: '175px', width: '100%' }} />
+          <img src={banner} alt="Header" style={{ height: '175px', width: '100%', objectFit: 'cover' }} />
         </div>
 
-        {/* Zona Naranja - Contenido Dinámico */}
         <div className="p-4 overflow-auto" style={{ flexGrow: 1 }}>
           {renderContenido()}
         </div>
