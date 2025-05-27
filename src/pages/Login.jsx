@@ -30,9 +30,10 @@ function Login() {
         // Redirigir en base al rol del usuario
         if (data.user.role === "Instructor") {
           navigate("/dashboard/instructor");
-        } else if (data.user.role === "Paciente"){
+        } else if (data.user.role === "Paciente") {
           navigate("/dashboard/paciente");
         }
+
 
       } else {
         setError(data.message || 'Error en autenticación');
