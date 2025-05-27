@@ -3,14 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../images/logo.png';
 
 function RegisterInstructor() {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
-    nombres: '',
-    apellidos: '',
-    ruc: '',
-    telefono: '',
-    correo: '',
-    contraseña: ''
+    name: '',
+    last_name: '',
+    identification: '',
+    phone: '',
+    email: '',
+    password: ''
   });
+
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -31,9 +33,9 @@ function RegisterInstructor() {
       });
       const data = await res.json();
 
-      if (data.success){
+      if (data.success) {
         setSuccess('Registro exitoso' + 'Redirigiendo a inicio de sesión...');
-        setTimeout(() => navigate('/login'), 2000);
+        setTimeout(() => navigate('/'), 2000);
       }
       else setError(data.message);
     } catch {
@@ -50,12 +52,12 @@ function RegisterInstructor() {
       {error && <div className="alert alert-danger">{error}</div>}
       {success && <div className="alert alert-success">{success}</div>}
       <form onSubmit={handleSubmit}>
-        <input type="text" name="nombres" placeholder="Nombres" className="form-control mb-2" onChange={handleChange} required />
-        <input type="text" name="apellidos" placeholder="Apellidos" className="form-control mb-2" onChange={handleChange} required />
-        <input type="text" name="ruc" placeholder="RUC (13 dígitos)" className="form-control mb-2" onChange={handleChange} required />
-        <input type="text" name="telefono" placeholder="Teléfono" className="form-control mb-2" onChange={handleChange} required />
-        <input type="email" name="correo" placeholder="Correo" className="form-control mb-2" onChange={handleChange} required />
-        <input type="password" name="contraseña" placeholder="Contraseña" className="form-control mb-3" onChange={handleChange} required />
+        <input type="text" name="name" placeholder="Nombres" className="form-control mb-2" onChange={handleChange} required />
+        <input type="text" name="last_name" placeholder="Apellidos" className="form-control mb-2" onChange={handleChange} required />
+        <input type="text" name="identification" placeholder="RUC (13 dígitos)" className="form-control mb-2" onChange={handleChange} required />
+        <input type="text" name="phone" placeholder="Teléfono" className="form-control mb-2" onChange={handleChange} required />
+        <input type="email" name="email" placeholder="Correo" className="form-control mb-2" onChange={handleChange} required />
+        <input type="password" name="password" placeholder="Contraseña" className="form-control mb-3" onChange={handleChange} required />
         <button type="submit" className="btn custom-btn w-100">Registrarse</button>
       </form>
     </div>
