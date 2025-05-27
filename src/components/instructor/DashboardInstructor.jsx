@@ -3,12 +3,14 @@ import GestionPacientes from '../instructor/GestionPacientes';
 import banner from '/src/images/banner.png';
 
 function DashboardInstructor() {
-  const [vistaActual, setVistaActual] = useState("pacientes");
+  const [vistaActual, setVistaActual] = useState("pacientes_lista");
 
   const renderContenido = () => {
     switch (vistaActual) {
-      case "pacientes":
-        return <GestionPacientes />;
+      case "pacientes_lista":
+        return <GestionPacientes vista="lista" />;
+      case "pacientes_crear":
+        return <GestionPacientes vista="crear" />;
       default:
         return <p>Seleccione una opción del menú.</p>;
     }
@@ -21,12 +23,19 @@ function DashboardInstructor() {
         <h4>Instructor</h4>
         <nav className="nav flex-column mt-4">
           <button
-            onClick={() => setVistaActual("pacientes")}
+            onClick={() => setVistaActual("pacientes_lista")}
             className="nav-link text-white btn btn-link text-start"
           >
-            ➕ Gestion Pacientes
+            📋 Gestión Pacientes
+          </button>
+          <button
+            onClick={() => setVistaActual("pacientes_crear")}
+            className="nav-link text-white btn btn-link text-start ms-3"
+          >
+            ➕ Añadir Paciente
           </button>
         </nav>
+
       </div>
 
       {/* Zona Verde y Naranja */}
