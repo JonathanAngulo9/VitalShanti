@@ -28,9 +28,9 @@ function Login() {
         localStorage.setItem('user', JSON.stringify(data.user));
 
         // Redirigir en base al rol del usuario
-        if (data.user.rol === "Instructor") {
+        if (data.user.role === "Instructor") {
           navigate("/dashboard/instructor");
-        } else if (data.user.rol === "Paciente"){
+        } else if (data.user.role === "Paciente"){
           navigate("/dashboard/paciente");
         }
 
