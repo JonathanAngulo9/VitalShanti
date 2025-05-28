@@ -2,16 +2,21 @@ import React, { useState } from 'react';
 import banner from '/src/images/banner.png';
 import GestionPacientes from './GestionPacientes';
 import CrearRutina from './CrearRutina';
+import RegisterPaciente from './GestionPacientes/RegisterPaciente';
 
 function DashboardInstructor() {
   const [vistaActual, setVistaActual] = useState("pacientes_lista");
+
+  const handleRegistroExitoso = () => {
+    setVistaActual("pacientes_lista");
+  };
 
   const renderContenido = () => {
     switch (vistaActual) {
       case "pacientes_lista":
         return <GestionPacientes vista="lista" />;
       case "pacientes_crear":
-        return <GestionPacientes vista="crear" />;
+        return <RegisterPaciente onRegistroExitoso={handleRegistroExitoso} />;
       case 'rutinas':
         return <CrearRutina />;
       default:

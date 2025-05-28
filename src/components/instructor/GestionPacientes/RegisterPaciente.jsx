@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../../images/logo.png';
 
-function RegisterPaciente() {
+function RegisterPaciente({ onRegistroExitoso }) {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     firstName: '',
@@ -33,8 +33,10 @@ function RegisterPaciente() {
       const data = await res.json();
 
       if (data.success) {
-        setSuccess('Registro exitoso' + 'Redirigiendo a inicio de sesión...');
-        setTimeout(() => navigate('/'), 2000);
+        setSuccess('Registro exitoso' + 'Redirigiendo a gestión de pacientes...');
+        setTimeout(() => {
+          if (onRegistroExitoso) onRegistroExitoso();
+        }, 1500);
       }
       else setError(data.message);
     } catch {
@@ -44,9 +46,6 @@ function RegisterPaciente() {
 
   return (
     <div className="container mt-5">
-      <div className="text-center mb-4">
-        <img src={logo} alt="VitalShanti Logo" style={{ maxWidth: '150px', height: 'auto' }} />
-      </div>
       <h2>Registro de Pacientes</h2>
       {error && <div className="alert alert-danger">{error}</div>}
       {success && <div className="alert alert-success">{success}</div>}
