@@ -3,15 +3,13 @@ import PacienteList from "./GestionPacientes/PacienteList";
 //import PacienteForm from "./GestionPacientes/PacienteForm";
 import PacienteDetailModal from "./GestionPacientes/PacienteDetailModal";
 import ConfirmDialog from "./GestionPacientes/ConfirmDialog";
-import PacienteForm from "./PacienteForm";
+import PacienteForm from "./GestionPacientes/PacienteFormEdit";
 
 function GestionPacientes({ vista: vistaProp }) {
   const [vista, setVista] = useState(vistaProp || "lista");
   const [pacientes, setPacientes] = useState([]);
   const [pacienteActual, setPacienteActual] = useState(null);
-  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
-  const [modoFormulario, setModoFormulario] = useState(null);
 
 
   const API_URL = import.meta.env.VITE_API_URL;
@@ -36,26 +34,6 @@ function GestionPacientes({ vista: vistaProp }) {
     fetchPacientes();
   }, []);
 
-  const handleInputChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleCrear = async () => {
-    const res = await fetch(`${API_URL}/pacientes`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...nuevoPaciente, instructorId: user.id }),
-    });
-    const data = await res.json();
-    if (data.success) {
-      fetchPacientes();
-      setVista("lista");
-    } else alert(data.message || "Error al crear paciente");
-  };
-
   const handleActualizarPaciente = async (editado) => {
     const res = await fetch(`${API_URL}/pacientes/${pacienteActual.id}`, {
       method: "PATCH",
@@ -68,17 +46,6 @@ function GestionPacientes({ vista: vistaProp }) {
       setVista("lista");
       setPacienteActual(null);
     } else alert(data.message || "Error al actualizar paciente");
-  };
-
-  const handleEliminarPaciente = async () => {
-    const res = await fetch(`${API_URL}/pacientes/${pacienteActual.id}`, {
-      method: "DELETE",
-    });
-    const data = await res.json();
-    if (data.success) {
-      fetchPacientes();
-      setShowConfirmDelete(false);
-    } else alert(data.message || "Error al eliminar paciente");
   };
 
   return (
@@ -98,7 +65,7 @@ function GestionPacientes({ vista: vistaProp }) {
           }}
         />
       )}
-      
+
       {vista === "editar" && pacienteActual && (
         <PacienteForm
           modo="editar"
@@ -120,7 +87,7 @@ function GestionPacientes({ vista: vistaProp }) {
           }}
         />
       )}
-      
+
     </div>
   );
 }
