@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import PacienteList from "./GestionPacientes/PacienteList";
-import PacienteForm from "./GestionPacientes/PacienteForm";
+//import PacienteForm from "./GestionPacientes/PacienteForm";
 import PacienteDetailModal from "./GestionPacientes/PacienteDetailModal";
 import ConfirmDialog from "./GestionPacientes/ConfirmDialog";
-import { useEffect, useState } from "react";
 import PacienteForm from "./PacienteForm";
 
 function GestionPacientes({ vista: vistaProp }) {
@@ -12,6 +11,8 @@ function GestionPacientes({ vista: vistaProp }) {
   const [pacienteActual, setPacienteActual] = useState(null);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
+  const [modoFormulario, setModoFormulario] = useState(null);
+
 
   const API_URL = import.meta.env.VITE_API_URL;
   const user = JSON.parse(localStorage.getItem("user"));
@@ -119,68 +120,7 @@ function GestionPacientes({ vista: vistaProp }) {
           }}
         />
       )}
-
-      {showConfirmDelete && pacienteActual && (
-        <ConfirmDialog
-          message={`¿Eliminar a ${pacienteActual.firstName} ${pacienteActual.lastName}?`}
-          onConfirm={handleEliminarPaciente}
-          onCancel={() => {
-            setPacienteActual(null);
-            setShowConfirmDelete(false);
-          }}
-        />
-      )}
-      {modoFormulario ? (
-        <div className="mb-6 p-4 bg-white rounded shadow">
-          <h3 className="text-xl font-semibold mb-2">
-            {modoFormulario === "crear" ? "Nuevo Paciente" : "Editar Paciente"}
-          </h3>
-
-          <PacienteForm
-            formData={formData}
-            onChange={handleInputChange}
-            onSubmit={modoFormulario === "crear" ? handleCrear : handleGuardarEdicion}
-            onCancel={resetFormulario}
-          />
-        </div>
-      ) : (
-        <button
-          onClick={() => setModoFormulario("crear")}
-          className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Añadir paciente +
-        </button>
-      )}
-
-      <table className="min-w-full bg-white rounded shadow overflow-hidden">
-        <thead className="bg-blue-100">
-          <tr>
-            <th className="p-2 text-left">Nombre</th>
-            <th className="p-2 text-left">Email</th>
-            <th className="p-2 text-left">Teléfono</th>
-            <th className="p-2">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {pacientes.map((p) => (
-            <tr key={p.id} className="border-b hover:bg-gray-100">
-              <td className="p-2">
-                {p.firstName} {p.lastName}
-              </td>
-              <td className="p-2">{p.email}</td>
-              <td className="p-2">{p.phone}</td>
-              <td className="p-2 text-center">
-                <button
-                  onClick={() => handleEditar(p)}
-                  className="text-blue-600 hover:underline"
-                >
-                  Editar
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      
     </div>
   );
 }
