@@ -3,6 +3,8 @@ import PacienteList from "./GestionPacientes/PacienteList";
 import PacienteForm from "./GestionPacientes/PacienteForm";
 import PacienteDetailModal from "./GestionPacientes/PacienteDetailModal";
 import ConfirmDialog from "./GestionPacientes/ConfirmDialog";
+import { useEffect, useState } from "react";
+import PacienteForm from "./PacienteForm";
 
 function GestionPacientes({ vista: vistaProp }) {
   const [vista, setVista] = useState(vistaProp || "lista");
@@ -29,7 +31,18 @@ function GestionPacientes({ vista: vistaProp }) {
     }
   };
 
-  const handleCrearPaciente = async (nuevoPaciente) => {
+  useEffect(() => {
+    fetchPacientes();
+  }, []);
+
+  const handleInputChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleCrear = async () => {
     const res = await fetch(`${API_URL}/pacientes`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -84,16 +97,7 @@ function GestionPacientes({ vista: vistaProp }) {
           }}
         />
       )}
-
-      {vista === "crear" && (
-        <PacienteForm
-          modo="crear"
-          paciente={null}
-          onSave={handleCrearPaciente}
-          onCancel={() => setVista("lista")}
-        />
-      )}
-
+      
       {vista === "editar" && pacienteActual && (
         <PacienteForm
           modo="editar"
@@ -126,6 +130,57 @@ function GestionPacientes({ vista: vistaProp }) {
           }}
         />
       )}
+      {modoFormulario ? (
+        <div className="mb-6 p-4 bg-white rounded shadow">
+          <h3 className="text-xl font-semibold mb-2">
+            {modoFormulario === "crear" ? "Nuevo Paciente" : "Editar Paciente"}
+          </h3>
+
+          <PacienteForm
+            formData={formData}
+            onChange={handleInputChange}
+            onSubmit={modoFormulario === "crear" ? handleCrear : handleGuardarEdicion}
+            onCancel={resetFormulario}
+          />
+        </div>
+      ) : (
+        <button
+          onClick={() => setModoFormulario("crear")}
+          className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Añadir paciente +
+        </button>
+      )}
+
+      <table className="min-w-full bg-white rounded shadow overflow-hidden">
+        <thead className="bg-blue-100">
+          <tr>
+            <th className="p-2 text-left">Nombre</th>
+            <th className="p-2 text-left">Email</th>
+            <th className="p-2 text-left">Teléfono</th>
+            <th className="p-2">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {pacientes.map((p) => (
+            <tr key={p.id} className="border-b hover:bg-gray-100">
+              <td className="p-2">
+                {p.firstName} {p.lastName}
+              </td>
+              <td className="p-2">{p.email}</td>
+              <td className="p-2">{p.phone}</td>
+              <td className="p-2 text-center">
+                <button
+                  onClick={() => handleEditar(p)}
+                  className="text-blue-600 hover:underline"
+                >
+                  Editar
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

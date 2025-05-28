@@ -1,37 +1,54 @@
-import React from 'react';
-import { NavLink, Routes, Route } from 'react-router-dom';
-import VerRutina from '../paciente/MiRutina';
-import VerSesiones from '../paciente/RegistrarSesion';
+import React , { useState } from 'react';
+import banner from '/src/images/banner.png';
+import VerRutina from './MiRutina';
+import VerSesiones from './RegistrarSesion';
 
 function DashboardPaciente() {
+  const [vistaActual, setVistaActual] = useState('rutinas');
+
+  const renderContenido = () => {
+    switch (vistaActual) {
+      case 'sesion':
+        return <VerSesiones />;
+      case 'rutinas':
+        return <VerRutina />;
+      default:
+        return <p>Seleccione una opción del menú.</p>;
+    }
+  };
+
   return (
-    <div className="d-flex position-absolute top-0 start-0 w-100" style={{ height: '100vh' }}>
-      {/* Zona Roja - Navbar Lateral */}
-      <div className="bg-primary text-white p-3" style={{ width: '250px' }}>
-        <h4>Paciente</h4>
-        <nav className="nav flex-column mt-4">
-          <NavLink to="rutina" className="nav-link text-white">📋 Mi Rutina</NavLink>
-          <NavLink to="sesiones" className="nav-link text-white">📅 Registrar Sesion</NavLink>
-        </nav>
-      </div>
-
-      {/* Zona Verde y Naranja */}
-      <div className="flex-grow-1 d-flex flex-column">
-        {/* Zona Verde - Imagen decorativa */}
-        <div className="p-3 bg-light border-bottom text-center">
-          <img src="\src\images\banner.png" alt="Header" style={{ height: '175px' , width: '100%'}} />
+      <div className="d-flex position-absolute top-0 start-0 w-100" style={{ height: '100vh' }}>
+        <div className="bg-dark text-white p-3" style={{ width: '250px' }}>
+          <h4>Paciente</h4>
+          <nav className="nav flex-column mt-4">
+            <button
+                onClick={() => setVistaActual('rutinas')}
+                className={`nav-link btn btn-link text-start text-white ${vistaActual === 'rutinas' ? 'fw-bold' : ''}`}
+            >
+              ➕ Mis Rutinas
+            </button>
+            <button
+                onClick={() => setVistaActual('sesion')}
+                className={`nav-link btn btn-link text-start text-white ${vistaActual === 'sesion' ? 'fw-bold' : ''}`}
+            >
+              📋 Ver Seriones
+            </button>
+          </nav>
         </div>
 
-        {/* Zona Naranja - Contenido Dinámico */}
-        <div className="p-4 overflow-auto" style={{ flexGrow: 1 }}>
-          <Routes>
-            <Route path="rutina" element={<VerRutina />} />
-            <Route path="sesiones" element={<VerSesiones />} />
-            <Route path="*" element={<p>Seleccione una opción del menú.</p>} />
-          </Routes>
+        {/* Contenido principal */}
+        <div className="flex-grow-1 d-flex flex-column">
+          {/* Banner */}
+          <div className="p-3 bg-light border-bottom text-center">
+            <img src={banner} alt="Header" style={{ height: '175px', width: '100%'}} />
+          </div>
+
+          <div className="p-4 overflow-auto" style={{ flexGrow: 1 }}>
+            {renderContenido()}
+          </div>
         </div>
       </div>
-    </div>
   );
 }
 
