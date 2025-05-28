@@ -86,7 +86,7 @@ function Login() {
           <small>
             ¿No tienes una cuenta? <br />
             <a href="/register/instructor" className="text-decoration-none">Regístrate como Instructor</a> o{' '}
-            <a href="/register/paciente" className="text-decoration-none">como Paciente</a>
+            <span className="text-gray-700">si eres Paciente, solicita a tu Instructor que te registre</span>
           </small>
         </div>
       </div>

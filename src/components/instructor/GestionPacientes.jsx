@@ -1,5 +1,5 @@
-// src/components/instructor/GestionPacientes.jsx
 import { useEffect, useState } from "react";
+import PacienteForm from "./PacienteForm";
 
 function GestionPacientes() {
   const [pacientes, setPacientes] = useState([]);
@@ -30,7 +30,7 @@ function GestionPacientes() {
   }, []);
 
   const handleInputChange = (e) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
@@ -103,26 +103,13 @@ function GestionPacientes() {
           <h3 className="text-xl font-semibold mb-2">
             {modoFormulario === "crear" ? "Nuevo Paciente" : "Editar Paciente"}
           </h3>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <input name="firstName" placeholder="Nombre" value={formData.firstName} onChange={handleInputChange} className="form-input" />
-            <input name="lastName" placeholder="Apellido" value={formData.lastName} onChange={handleInputChange} className="form-input" />
-            <input name="email" placeholder="Email" value={formData.email} onChange={handleInputChange} className="form-input" />
-            <input name="phone" placeholder="Teléfono" value={formData.phone} onChange={handleInputChange} className="form-input" />
-            <input name="identification" placeholder="Identificación" value={formData.identification} onChange={handleInputChange} className="form-input" />
-            <input name="password" placeholder="Contraseña" value={formData.password} onChange={handleInputChange} className="form-input" type="password" />
-          </div>
 
-          <div className="flex gap-2">
-            <button
-              onClick={modoFormulario === "crear" ? handleCrear : handleGuardarEdicion}
-              className="bg-green-600 text-white px-4 py-2 rounded"
-            >
-              Guardar
-            </button>
-            <button onClick={resetFormulario} className="bg-gray-400 text-white px-4 py-2 rounded">
-              Cancelar
-            </button>
-          </div>
+          <PacienteForm
+            formData={formData}
+            onChange={handleInputChange}
+            onSubmit={modoFormulario === "crear" ? handleCrear : handleGuardarEdicion}
+            onCancel={resetFormulario}
+          />
         </div>
       ) : (
         <button
@@ -145,11 +132,16 @@ function GestionPacientes() {
         <tbody>
           {pacientes.map((p) => (
             <tr key={p.id} className="border-b hover:bg-gray-100">
-              <td className="p-2">{p.firstName} {p.lastName}</td>
+              <td className="p-2">
+                {p.firstName} {p.lastName}
+              </td>
               <td className="p-2">{p.email}</td>
               <td className="p-2">{p.phone}</td>
               <td className="p-2 text-center">
-                <button onClick={() => handleEditar(p)} className="text-blue-600 hover:underline">
+                <button
+                  onClick={() => handleEditar(p)}
+                  className="text-blue-600 hover:underline"
+                >
                   Editar
                 </button>
               </td>

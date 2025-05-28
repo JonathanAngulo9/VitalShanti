@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import logo from '../images/logo.png';
+import logo from '../../images/logo.png';
 
 function RegisterPaciente() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: '',
-    last_name: '',
+    firstName: '',
+    lastName: '',
     identification: '',
     phone: '',
     email: '',
@@ -25,7 +25,7 @@ function RegisterPaciente() {
     setSuccess('');
 
     try {
-      const res = await fetch('http://localhost:3000/api/auth/register/paciente', {
+      const res = await fetch('http://localhost:3000/api/pacientes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -51,8 +51,8 @@ function RegisterPaciente() {
       {error && <div className="alert alert-danger">{error}</div>}
       {success && <div className="alert alert-success">{success}</div>}
       <form onSubmit={handleSubmit}>
-        <input type="text" name="name" placeholder="Nombres" className="form-control mb-2" onChange={handleChange} required />
-        <input type="text" name="last_name" placeholder="Apellidos" className="form-control mb-2" onChange={handleChange} required />
+        <input type="text" name="firstName" placeholder="Nombres" className="form-control mb-2" onChange={handleChange} required />
+        <input type="text" name="lastName" placeholder="Apellidos" className="form-control mb-2" onChange={handleChange} required />
         <input type="text" name="identification" placeholder="Cédula (10 dígitos)" className="form-control mb-2" onChange={handleChange} required />
         <input type="text" name="phone" placeholder="Teléfono" className="form-control mb-2" onChange={handleChange} required />
         <input type="email" name="email" placeholder="Correo" className="form-control mb-2" onChange={handleChange} required />
