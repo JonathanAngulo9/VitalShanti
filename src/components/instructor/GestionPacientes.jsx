@@ -1,24 +1,20 @@
 import React, { useState, useEffect } from "react";
-import PacienteList from "./GestionPacientes/PacienteList";
-//import PacienteForm from "./GestionPacientes/PacienteForm";
-import PacienteDetailModal from "./GestionPacientes/PacienteDetailModal";
-import ConfirmDialog from "./GestionPacientes/ConfirmDialog";
-import PacienteForm from "./GestionPacientes/PacienteFormEdit";
+import ListPaciente from "./GestionPacientes/ListPaciente";
+import DetailPaciente from "./GestionPacientes/DetailPaciente";
+import EditPaciente from "./GestionPacientes/EditPaciente";
 
 function GestionPacientes({ vista: vistaProp }) {
-  const [vista, setVista] = useState(vistaProp || "lista");
   const [pacientes, setPacientes] = useState([]);
   const [pacienteActual, setPacienteActual] = useState(null);
   const [showDetail, setShowDetail] = useState(false);
-
+  const [showEdit, setShowEdit] = useState(false);
 
   const API_URL = import.meta.env.VITE_API_URL;
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     fetchPacientes();
-    setVista(vistaProp);
-  }, [vistaProp]);
+  }, []);
 
   const fetchPacientes = async () => {
     try {
@@ -30,10 +26,6 @@ function GestionPacientes({ vista: vistaProp }) {
     }
   };
 
-  useEffect(() => {
-    fetchPacientes();
-  }, []);
-
   const handleActualizarPaciente = async (editado) => {
     const res = await fetch(`${API_URL}/pacientes/${pacienteActual.id}`, {
       method: "PATCH",
@@ -43,7 +35,7 @@ function GestionPacientes({ vista: vistaProp }) {
     const data = await res.json();
     if (data.success) {
       fetchPacientes();
-      setVista("lista");
+      setShowEdit(false);
       setPacienteActual(null);
     } else alert(data.message || "Error al actualizar paciente");
   };
@@ -52,34 +44,35 @@ function GestionPacientes({ vista: vistaProp }) {
     <div className="max-w-[1400px] w-full mx-auto p-4 min-h-screen">
       <h2 className="text-2xl font-bold mb-4">Gestión de Pacientes</h2>
 
-      {vista === "lista" && (
-        <PacienteList
-          pacientes={pacientes}
-          onEdit={(p) => {
-            setVista("editar");
-            setPacienteActual(p);
-          }}
-          onView={(p) => {
-            setPacienteActual(p);
-            setShowDetail(true);
-          }}
-        />
-      )}
+      <ListPaciente
+        pacientes={pacientes}
+        onEdit={(p) => {
+          setPacienteActual(p);
+          setShowEdit(true);
+        }}
+        onView={(p) => {
+          setPacienteActual(p);
+          setShowDetail(true);
+        }}
+      />
 
-      {vista === "editar" && pacienteActual && (
-        <PacienteForm
+      {/* Modal de edición */}
+      {showEdit && pacienteActual && (
+        <EditPaciente
+          open={showEdit}
           modo="editar"
           paciente={pacienteActual}
           onSave={handleActualizarPaciente}
           onCancel={() => {
-            setVista("lista");
+            setShowEdit(false);
             setPacienteActual(null);
           }}
         />
       )}
 
+      {/* Modal de detalle */}
       {showDetail && pacienteActual && (
-        <PacienteDetailModal
+        <DetailPaciente
           paciente={pacienteActual}
           onClose={() => {
             setPacienteActual(null);
@@ -87,7 +80,6 @@ function GestionPacientes({ vista: vistaProp }) {
           }}
         />
       )}
-
     </div>
   );
 }
