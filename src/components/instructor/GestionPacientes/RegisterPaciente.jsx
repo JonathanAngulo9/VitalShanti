@@ -24,11 +24,22 @@ function RegisterPaciente({ onRegistroExitoso }) {
     setError('');
     setSuccess('');
 
+    const instructor = JSON.parse(localStorage.getItem("user"));
+    const instructorId = instructor?.id;
+
+    if (!instructorId) {
+      setError("Instructor no autenticado");
+      return;
+    }
+
     try {
       const res = await fetch('http://localhost:3000/api/pacientes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          instructorId
+        }),
       });
       const data = await res.json();
 
