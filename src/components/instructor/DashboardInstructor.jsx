@@ -55,7 +55,7 @@ function DashboardInstructor() {
       <div className="flex-grow-1 d-flex flex-column">
         {/* Banner */}
         <div className="p-3 bg-light border-bottom text-center">
-          <img src={banner} alt="Header" style={{ height: '175px', width: '100%', objectFit: 'cover' }} />
+          <img src={banner} alt="Header" style={{ height: '175px', width: '100%' }} />
         </div>
 
         <div className="p-4 overflow-auto" style={{ flexGrow: 1 }}>

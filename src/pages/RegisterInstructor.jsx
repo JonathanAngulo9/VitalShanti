@@ -5,8 +5,8 @@ import logo from '../images/logo.png';
 function RegisterInstructor() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: '',
-    last_name: '',
+    firstName: '',
+    lastName: '',
     identification: '',
     phone: '',
     email: '',
@@ -52,8 +52,8 @@ function RegisterInstructor() {
       {error && <div className="alert alert-danger">{error}</div>}
       {success && <div className="alert alert-success">{success}</div>}
       <form onSubmit={handleSubmit}>
-        <input type="text" name="name" placeholder="Nombres" className="form-control mb-2" onChange={handleChange} required />
-        <input type="text" name="last_name" placeholder="Apellidos" className="form-control mb-2" onChange={handleChange} required />
+        <input type="text" name="firstName" placeholder="Nombres" className="form-control mb-2" onChange={handleChange} required />
+        <input type="text" name="lastName" placeholder="Apellidos" className="form-control mb-2" onChange={handleChange} required />
         <input type="text" name="identification" placeholder="RUC (13 dígitos)" className="form-control mb-2" onChange={handleChange} required />
         <input type="text" name="phone" placeholder="Teléfono" className="form-control mb-2" onChange={handleChange} required />
         <input type="email" name="email" placeholder="Correo" className="form-control mb-2" onChange={handleChange} required />
