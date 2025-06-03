@@ -1,39 +1,75 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 
 const CrearRutina = () => {
     const [pacientes, setPacientes] = useState([]);
     const [posturas, setPosturas] = useState([]);
-    const [tipoTerapias, setTipoTerapias] = useState([]);
+
+    // Tipos de terapia hardcodeados
+    const tipoTerapias = [
+        { id: 1, name: 'Ansiedad' },
+        { id: 2, name: 'Artritis' },
+        { id: 3, name: 'Dolor de espalda' },
+        { id: 4, name: 'Dolor de cabeza' },
+        { id: 5, name: 'Insomnio' },
+        { id: 6, name: 'Mala postura' },
+    ];
 
     const [form, setForm] = useState({
         pacienteId: '',
         nombre: '',
         tipoTerapiaId: '',
         sesionesRecom: 1,
-        posturasSeleccionadas: [], // { posturaId, orden, duracion }
+        posturasSeleccionadas: [],
     });
 
     const [rutinaActiva, setRutinaActiva] = useState(null);
     const [error, setError] = useState('');
     const [mensaje, setMensaje] = useState('');
 
+    const API_URL = import.meta.env.VITE_API_URL; // base backend URL
+
+    const fetchJSON = async (url, options = {}) => {
+        const res = await fetch(url, options);
+        if (!res.ok) throw new Error(`Error HTTP: ${res.status}`);
+        return await res.json();
+    };
+
     useEffect(() => {
-        // Cargar pacientes
-        axios.get('/instructor/pacientes').then(res => setPacientes(res.data));
-        // Cargar posturas
-        axios.get('/instructor/posturas').then(res => setPosturas(res.data));
-        // Cargar tipos de terapia (suponiendo tienes este endpoint)
-        axios.get('/tipoTerapias').then(res => setTipoTerapias(res.data));
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user?.id) {
+            setError('Instructor no autenticado');
+            return;
+        }
+
+        fetchJSON(`${API_URL}/pacientes?instructorId=${user.id}`)
+            .then(data => {
+                if (data.success) {
+                    // Mapear solo lo necesario
+                    const pacientesFiltrados = data.patients.map(({ id, firstName, lastName }) => ({
+                        id,
+                        firstName,
+                        lastName,
+                    }));
+                    setPacientes(pacientesFiltrados);
+                } else {
+                    setError('No se pudieron cargar pacientes');
+                }
+            })
+            .catch(() => setError('Error al cargar pacientes'));
+
+        fetchJSON(`${API_URL}/instructor/posturas`)
+            .then(data => {
+                if (data.success) setPosturas(data.posturas);
+                else setError('No se pudieron cargar posturas');
+            })
+            .catch(() => setError('Error al cargar posturas'));
     }, []);
 
-    // Manejo de inputs simples
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm(prev => ({ ...prev, [name]: value }));
     };
 
-    // Agregar postura seleccionada
     const agregarPostura = (postura) => {
         if (form.posturasSeleccionadas.find(p => p.posturaId === postura.id)) {
             setError('Postura ya seleccionada');
@@ -46,27 +82,27 @@ const CrearRutina = () => {
         }));
     };
 
-    // Quitar postura
     const quitarPostura = (posturaId) => {
         setForm(prev => {
             const filtradas = prev.posturasSeleccionadas.filter(p => p.posturaId !== posturaId);
-            // Reordenar
             const reordenadas = filtradas.map((p, i) => ({ ...p, orden: i + 1 }));
             return { ...prev, posturasSeleccionadas: reordenadas };
         });
     };
 
-    // Cambiar duración por postura
     const cambiarDuracion = (posturaId, duracion) => {
+        let dur = Number(duracion);
+        if (dur < 1) dur = 1;
+        if (dur > 600) dur = 600;
+
         setForm(prev => ({
             ...prev,
             posturasSeleccionadas: prev.posturasSeleccionadas.map(p =>
-                p.posturaId === posturaId ? { ...p, duracion: Number(duracion) } : p
+                p.posturaId === posturaId ? { ...p, duracion: dur } : p
             )
         }));
     };
 
-    // Enviar formulario
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -81,25 +117,37 @@ const CrearRutina = () => {
             return;
         }
 
+        const payload = {
+            pacienteId: Number(form.pacienteId),
+            nombre: form.nombre,
+            tipoTerapiaId: Number(form.tipoTerapiaId),
+            sesionesRecom: Number(form.sesionesRecom),
+            posturas: form.posturasSeleccionadas.map(({ posturaId, orden, duracion }) => ({ posturaId, orden, duracion })),
+        };
+
         try {
-            const payload = {
-                pacienteId: Number(form.pacienteId),
-                nombre: form.nombre,
-                tipoTerapiaId: Number(form.tipoTerapiaId),
-                sesionesRecom: Number(form.sesionesRecom),
-                posturas: form.posturasSeleccionadas.map(({ posturaId, orden, duracion }) => ({
-                    posturaId,
-                    orden,
-                    duracion,
-                })),
-            };
-            const res = await axios.post('/instructor/rutinas', payload);
-            setRutinaActiva(res.data);
-            setMensaje('Rutina creada exitosamente');
-            // Reset form posturas seleccionadas
-            setForm(prev => ({ ...prev, posturasSeleccionadas: [] }));
+            const res = await fetch(`${API_URL}/instructor/rutinas`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+
+            if (!res.ok) {
+                const errData = await res.json();
+                throw new Error(errData.message || 'Error al crear rutina');
+            }
+
+            const data = await res.json();
+
+            if (data.success) {
+                setRutinaActiva(data.rutina);
+                setMensaje('Rutina creada exitosamente');
+                setForm(prev => ({ ...prev, posturasSeleccionadas: [] }));
+            } else {
+                setError('No se pudo crear la rutina');
+            }
         } catch (err) {
-            setError(err.response?.data?.error || 'Error al crear rutina');
+            setError(err.message);
         }
     };
 
@@ -111,40 +159,76 @@ const CrearRutina = () => {
             {mensaje && <div className="alert alert-success">{mensaje}</div>}
 
             <form onSubmit={handleSubmit}>
+
                 <div className="mb-3">
-                    <label>Paciente</label>
-                    <select className="form-select" name="pacienteId" value={form.pacienteId} onChange={handleChange} required>
+                    <label htmlFor="pacienteId">Paciente</label>
+                    <select
+                        id="pacienteId"
+                        name="pacienteId"
+                        className="form-select"
+                        value={form.pacienteId}
+                        onChange={handleChange}
+                        required
+                    >
                         <option value="">Selecciona paciente</option>
-                        {pacientes.map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}
+                        {pacientes.map(p => (
+                            <option key={p.id} value={p.id}>{p.firstName} {p.lastName}</option>
+                        ))}
                     </select>
                 </div>
 
                 <div className="mb-3">
-                    <label>Nombre de la rutina</label>
-                    <input type="text" className="form-control" name="nombre" value={form.nombre} onChange={handleChange} required />
+                    <label htmlFor="nombre">Nombre de la rutina</label>
+                    <input
+                        id="nombre"
+                        type="text"
+                        name="nombre"
+                        className="form-control"
+                        value={form.nombre}
+                        onChange={handleChange}
+                        required
+                    />
                 </div>
 
                 <div className="mb-3">
-                    <label>Tipo de terapia</label>
-                    <select className="form-select" name="tipoTerapiaId" value={form.tipoTerapiaId} onChange={handleChange} required>
+                    <label htmlFor="tipoTerapiaId">Tipo de terapia</label>
+                    <select
+                        id="tipoTerapiaId"
+                        name="tipoTerapiaId"
+                        className="form-select"
+                        value={form.tipoTerapiaId}
+                        onChange={handleChange}
+                        required
+                    >
                         <option value="">Selecciona tipo de terapia</option>
-                        {tipoTerapias.map(t => <option key={t.id} value={t.id}>{t.nombre}</option>)}
+                        {tipoTerapias.map(t => (
+                            <option key={t.id} value={t.id}>{t.name}</option>
+                        ))}
                     </select>
                 </div>
 
                 <div className="mb-3">
-                    <label>Sesiones recomendadas</label>
-                    <input type="number" min="1" className="form-control" name="sesionesRecom" value={form.sesionesRecom} onChange={handleChange} required />
+                    <label htmlFor="sesionesRecom">Sesiones recomendadas</label>
+                    <input
+                        id="sesionesRecom"
+                        type="number"
+                        min="1"
+                        name="sesionesRecom"
+                        className="form-control"
+                        value={form.sesionesRecom}
+                        onChange={handleChange}
+                        required
+                    />
                 </div>
 
                 <h4>Selecciona posturas (mínimo 6)</h4>
                 <div className="row">
                     <div className="col-6">
                         <h5>Posturas disponibles</h5>
-                        <ul className="list-group" style={{ maxHeight: '300px', overflowY: 'scroll' }}>
+                        <ul className="list-group" style={{ maxHeight: '300px', overflowY: 'auto' }}>
                             {posturas.map(postura => (
                                 <li key={postura.id} className="list-group-item d-flex justify-content-between align-items-center">
-                                    {postura.nombreEsp}
+                                    {postura.nameEs}
                                     <button type="button" className="btn btn-sm btn-primary" onClick={() => agregarPostura(postura)}>Agregar</button>
                                 </li>
                             ))}
@@ -154,32 +238,26 @@ const CrearRutina = () => {
                     <div className="col-6">
                         <h5>Posturas seleccionadas</h5>
                         {form.posturasSeleccionadas.length === 0 && <p>No hay posturas seleccionadas</p>}
-                        <ul className="list-group" style={{ maxHeight: '300px', overflowY: 'scroll' }}>
+                        <ul className="list-group" style={{ maxHeight: '300px', overflowY: 'auto' }}>
                             {form.posturasSeleccionadas.map(({ posturaId, orden, duracion }) => {
                                 const postura = posturas.find(p => p.id === posturaId);
                                 if (!postura) return null;
                                 return (
                                     <li key={posturaId} className="list-group-item d-flex justify-content-between align-items-center">
                                         <div>
-                                            <strong>{orden}.</strong> {postura.nombreEsp}
+                                            <strong>{orden}.</strong> {postura.nameEs}
                                         </div>
                                         <div>
                                             <input
                                                 type="number"
-                                                min="10"
+                                                min="1"
                                                 max="600"
                                                 value={duracion}
                                                 onChange={e => cambiarDuracion(posturaId, e.target.value)}
                                                 style={{ width: '70px' }}
-                                                title="Duración en segundos"
+                                                title="Duración en minutos"
                                             />
-                                            <button
-                                                type="button"
-                                                className="btn btn-sm btn-danger ms-2"
-                                                onClick={() => quitarPostura(posturaId)}
-                                            >
-                                                Quitar
-                                            </button>
+                                            <button type="button" className="btn btn-sm btn-danger ms-2" onClick={() => quitarPostura(posturaId)}>Quitar</button>
                                         </div>
                                     </li>
                                 );
@@ -194,19 +272,23 @@ const CrearRutina = () => {
             {rutinaActiva && (
                 <div className="mt-5">
                     <h3>Rutina activa creada</h3>
-                    <p><strong>Nombre:</strong> {rutinaActiva.nombre}</p>
-                    <p><strong>Sesiones recomendadas:</strong> {rutinaActiva.sesionesRecom}</p>
+                    <p><strong>Nombre:</strong> {rutinaActiva.name}</p>
+                    <p><strong>Sesiones recomendadas:</strong> {rutinaActiva.recommendedSessions}</p>
                     <h5>Posturas:</h5>
-                    <ol>
-                        {rutinaActiva.seriesDetalle.map(p => {
-                            const postura = posturas.find(post => post.id === p.posturaId);
-                            return (
-                                <li key={p.id}>
-                                    {postura?.nombreEsp || 'Postura no encontrada'} - Duración: {p.duracion} seg
-                                </li>
-                            );
-                        })}
-                    </ol>
+                    {rutinaActiva.postures && rutinaActiva.postures.length > 0 ? (
+                        <ol>
+                            {rutinaActiva.postures.map((p, i) => {
+                                const postura = posturas.find(post => post.id === p.postureId);
+                                return (
+                                    <li key={i}>
+                                        {postura?.nameEs || 'Postura no encontrada'} - Duración: {p.durationMinutes} minutos - Orden: {p.order}
+                                    </li>
+                                );
+                            })}
+                        </ol>
+                    ) : (
+                        <p>No hay posturas en la rutina creada</p>
+                    )}
                 </div>
             )}
         </div>
