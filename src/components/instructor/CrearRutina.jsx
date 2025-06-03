@@ -3,16 +3,7 @@ import React, { useState, useEffect } from 'react';
 const CrearRutina = () => {
     const [pacientes, setPacientes] = useState([]);
     const [posturas, setPosturas] = useState([]);
-
-    // Tipos de terapia hardcodeados
-    const tipoTerapias = [
-        { id: 1, name: 'Ansiedad' },
-        { id: 2, name: 'Artritis' },
-        { id: 3, name: 'Dolor de espalda' },
-        { id: 4, name: 'Dolor de cabeza' },
-        { id: 5, name: 'Insomnio' },
-        { id: 6, name: 'Mala postura' },
-    ];
+    const [tipoTerapias, setTipoTerapias] = useState([]);
 
     const [form, setForm] = useState({
         pacienteId: '',
@@ -41,10 +32,10 @@ const CrearRutina = () => {
             return;
         }
 
+        // Obtener pacientes
         fetchJSON(`${API_URL}/pacientes?instructorId=${user.id}`)
             .then(data => {
                 if (data.success) {
-                    // Mapear solo lo necesario
                     const pacientesFiltrados = data.patients.map(({ id, firstName, lastName }) => ({
                         id,
                         firstName,
@@ -57,12 +48,18 @@ const CrearRutina = () => {
             })
             .catch(() => setError('Error al cargar pacientes'));
 
+        // Obtener posturas
         fetchJSON(`${API_URL}/instructor/posturas`)
             .then(data => {
                 if (data.success) setPosturas(data.posturas);
                 else setError('No se pudieron cargar posturas');
             })
             .catch(() => setError('Error al cargar posturas'));
+
+        // Obtener terapias (dinámicas)
+        fetchJSON(`${API_URL}/instructor/terapias`)
+            .then(data => setTipoTerapias(data))
+            .catch(() => setError('Error al cargar tipos de terapia'));
     }, []);
 
     const handleChange = (e) => {
@@ -112,8 +109,8 @@ const CrearRutina = () => {
             setError('Completa todos los campos obligatorios');
             return;
         }
-        if (form.posturasSeleccionadas.length < 6) {
-            setError('Debes seleccionar al menos 6 posturas');
+        if (form.posturasSeleccionadas.length < 1) {
+            setError('Debes seleccionar al menos 1 postura');
             return;
         }
 
@@ -221,7 +218,7 @@ const CrearRutina = () => {
                     />
                 </div>
 
-                <h4>Selecciona posturas (mínimo 6)</h4>
+                <h4>Selecciona posturas (mínimo 1)</h4>
                 <div className="row">
                     <div className="col-6">
                         <h5>Posturas disponibles</h5>
