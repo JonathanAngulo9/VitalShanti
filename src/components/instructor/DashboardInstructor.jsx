@@ -3,9 +3,14 @@ import banner from '/src/images/banner.png';
 import GestionPacientes from './GestionPacientes';
 import CrearRutina from './CrearRutina';
 import RegisterPaciente from './GestionPacientes/RegisterPaciente';
+import InstructorDashboard from './VerProgreso';
 
 function DashboardInstructor() {
   const [vistaActual, setVistaActual] = useState("pacientes_lista");
+
+  // Obtener el ID del instructor desde localStorage (puedes ajustar según tu lógica)
+  // Para pruebas, si no hay valor, se usa "1" como valor por defecto
+  const idInstructor = localStorage.getItem("idInstructor") || 1;
 
   const handleRegistroExitoso = () => {
     setVistaActual("pacientes_lista");
@@ -19,6 +24,21 @@ function DashboardInstructor() {
         return <RegisterPaciente onRegistroExitoso={handleRegistroExitoso} />;
       case 'rutinas':
         return <CrearRutina />;
+      case 'progreso':
+        return (
+          <div className="d-flex justify-content-center" style={{ padding: '30px' }}>
+            <div style={{
+              maxWidth: '700px',
+              width: '100%',
+              padding: '20px',
+              boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+              borderRadius: '10px',
+              backgroundColor: '#ffffff'
+            }}>
+              <InstructorDashboard instructorId={idInstructor} />
+            </div>
+          </div>
+        );
       default:
         return <p>Seleccione una opción del menú.</p>;
     }
@@ -47,6 +67,12 @@ function DashboardInstructor() {
             className={`nav-link btn btn-link text-start text-white ${vistaActual === 'rutinas' ? 'fw-bold' : ''}`}
           >
             📋 Crear Rutinas
+          </button>
+          <button
+            onClick={() => setVistaActual('progreso')}
+            className={`nav-link btn btn-link text-start text-white ${vistaActual === 'progreso' ? 'fw-bold' : ''}`}
+          >
+            📈 Ver Progreso
           </button>
         </nav>
       </div>
