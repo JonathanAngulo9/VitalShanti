@@ -4,10 +4,14 @@ import banner from '/src/images/banner.png';
 import GestionPacientes from './GestionPacientes';
 import CrearRutina from './CrearRutina';
 import RegisterPaciente from './GestionPacientes/RegisterPaciente';
+import InstructorDashboard from './VerProgreso';
 
 function DashboardInstructor() {
   const [vistaActual, setVistaActual] = useState("pacientes_lista");
-  const navigate = useNavigate(); // Necesario para redireccionar
+
+  // Obtener el ID del instructor desde localStorage (puedes ajustar según tu lógica)
+  // Para pruebas, si no hay valor, se usa "1" como valor por defecto
+  const idInstructor = localStorage.getItem("idInstructor") || 1;
 
   const handleRegistroExitoso = () => {
     setVistaActual("pacientes_lista");
@@ -28,6 +32,21 @@ function DashboardInstructor() {
         return <RegisterPaciente onRegistroExitoso={handleRegistroExitoso} />;
       case 'rutinas':
         return <CrearRutina />;
+      case 'progreso':
+        return (
+          <div className="d-flex justify-content-center" style={{ padding: '30px' }}>
+            <div style={{
+              maxWidth: '700px',
+              width: '100%',
+              padding: '20px',
+              boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+              borderRadius: '10px',
+              backgroundColor: '#ffffff'
+            }}>
+              <InstructorDashboard instructorId={idInstructor} />
+            </div>
+          </div>
+        );
       default:
         return <p>Seleccione una opción del menú.</p>;
     }
@@ -35,41 +54,35 @@ function DashboardInstructor() {
 
   return (
     <div className="d-flex position-absolute top-0 start-0 w-100" style={{ height: '100vh' }}>
-      {/* Sidebar */}
-      <div className="bg-dark text-white p-3 d-flex flex-column justify-content-between" style={{ width: '250px' }}>
-        <div>
-          <h4>Instructor</h4>
-          <nav className="nav flex-column mt-4">
-            <button
-              onClick={() => setVistaActual("pacientes_lista")}
-              className="nav-link text-white btn btn-link text-start"
-            >
-              📋 Gestión Pacientes
-            </button>
-            <button
-              onClick={() => setVistaActual("pacientes_crear")}
-              className="nav-link text-white btn btn-link text-start ms-3"
-            >
-              ➕ Añadir Paciente
-            </button>
-            <button
-              onClick={() => setVistaActual('rutinas')}
-              className={`nav-link btn btn-link text-start text-white ${vistaActual === 'rutinas' ? 'fw-bold' : ''}`}
-            >
-              📋 Crear Rutinas
-            </button>
-          </nav>
-        </div>
-
-        {/* Botón de salir al fondo */}
-        <div className="mt-4 pt-4 border-top">
+      {/* Zona Roja - Navbar Lateral */}
+      <div className="bg-dark text-white p-3" style={{ width: '250px' }}>
+        <h4>Instructor</h4>
+        <nav className="nav flex-column mt-4">
           <button
-            onClick={logout}
-            className="nav-link text-white btn btn-link text-start w-100"
+            onClick={() => setVistaActual("pacientes_lista")}
+            className="nav-link text-white btn btn-link text-start"
           >
-            🚪 Salir
+            📋 Gestión Pacientes
           </button>
-        </div>
+          <button
+            onClick={() => setVistaActual("pacientes_crear")}
+            className="nav-link text-white btn btn-link text-start ms-3"
+          >
+            ➕ Añadir Paciente
+          </button>
+          <button
+            onClick={() => setVistaActual('rutinas')}
+            className={`nav-link btn btn-link text-start text-white ${vistaActual === 'rutinas' ? 'fw-bold' : ''}`}
+          >
+            📋 Crear Rutinas
+          </button>
+          <button
+            onClick={() => setVistaActual('progreso')}
+            className={`nav-link btn btn-link text-start text-white ${vistaActual === 'progreso' ? 'fw-bold' : ''}`}
+          >
+            📈 Ver Progreso
+          </button>
+        </nav>
       </div>
 
       {/* Contenido principal */}

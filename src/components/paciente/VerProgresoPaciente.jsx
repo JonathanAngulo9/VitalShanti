@@ -1,5 +1,3 @@
-//Como llamar:
-//GraficoProgreso pacienteId={idPaciente} /> />
 import React, { useEffect, useState } from 'react';
 import {
   BarChart, Bar,
@@ -11,11 +9,11 @@ import {
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
-// Formateo fechas
 function formatFechaCompleta(fecha) {
   const [year, month, day] = fecha.split('-');
   return `${day}-${month}-${year}`;
 }
+
 function formatFechaEjeX(fecha) {
   const [year, month, day] = fecha.split('-');
   return `${day}-${month}`;
@@ -23,8 +21,10 @@ function formatFechaEjeX(fecha) {
 
 export default function GraficoProgreso({ pacienteId }) {
   const [datos, setDatos] = useState([]);
+  const [nombrePaciente, setNombrePaciente] = useState("");
   const [tipoGrafico, setTipoGrafico] = useState('barras');
   const [error, setError] = useState(null);
+  const [comentarioSeleccionado, setComentarioSeleccionado] = useState(null);
 
   useEffect(() => {
     fetch(`${API_URL}/pacientes/progreso/${pacienteId}`)
@@ -37,9 +37,11 @@ export default function GraficoProgreso({ pacienteId }) {
             Antes: item.dolorInicial,
             Despues: item.dolorFinal,
             AntesTexto: item.dolorInicialTexto,
-            DespuesTexto: item.dolorFinalTexto
+            DespuesTexto: item.dolorFinalTexto,
+            comentario: item.comentarioSession
           }));
           setDatos(formatted);
+          setNombrePaciente(data.nombreCompleto);
           setError(null);
         } else {
           setError(data.message || "No se encontraron datos.");
@@ -51,6 +53,13 @@ export default function GraficoProgreso({ pacienteId }) {
         setDatos([]);
       });
   }, [pacienteId]);
+
+  const handleClickDato = (data) => {
+    if (data && data.activePayload && data.activePayload[0]) {
+      const punto = data.activePayload[0].payload;
+      setComentarioSeleccionado(punto.comentario || "(Sin comentario)");
+    }
+  };
 
   if (error) {
     return (
@@ -66,7 +75,7 @@ export default function GraficoProgreso({ pacienteId }) {
           src="/src/images/icon.png"
           alt="Error"
           style={{ width: 100, height: 100, marginBottom: 20 }}
-        /> 
+        />
         <p>{error}</p>
       </div>
     );
@@ -88,10 +97,18 @@ export default function GraficoProgreso({ pacienteId }) {
 
   return (
     <div>
-      <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Progreso del Dolor</h2>
+      <h2 style={{ textAlign: 'center', marginBottom: '10px' }}>
+        Progreso del Dolor – {nombrePaciente}
+      </h2>
 
       {tipoGrafico === 'barras' ? (
-        <BarChart width={600} height={300} data={datos} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+        <BarChart
+          width={600}
+          height={300}
+          data={datos}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          onClick={handleClickDato}
+        >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="fecha" />
           <YAxis domain={[0, 5]} />
@@ -101,7 +118,13 @@ export default function GraficoProgreso({ pacienteId }) {
           <Bar dataKey="Despues" fill="#82ca9d" barSize={30} />
         </BarChart>
       ) : (
-        <LineChart width={600} height={300} data={datos} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+        <LineChart
+          width={600}
+          height={300}
+          data={datos}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          onClick={handleClickDato}
+        >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="fecha" />
           <YAxis domain={[0, 5]} />
@@ -124,6 +147,28 @@ export default function GraficoProgreso({ pacienteId }) {
         <span style={{ fontWeight: 'bold' }}>
           {tipoGrafico === 'barras' ? 'Barras' : 'Líneas'}
         </span>
+      </div>
+
+      {/* Espacio siempre visible para comentarios */}
+      <div style={{
+        marginTop: '20px',
+        padding: '10px',
+        border: '1px solid #ccc',
+        borderRadius: '8px',
+        backgroundColor: '#f9f9f9',
+        minHeight: '80px',
+        color: comentarioSeleccionado ? '#000' : '#999'
+      }}>
+        <strong>
+          {comentarioSeleccionado ? (
+            <>Comentario de {nombrePaciente}:</>
+          ) : (
+            <span style={{ opacity: 0.6 }}>📝 Comentarios</span>
+          )}
+        </strong>
+        <p style={{ marginTop: '5px', opacity: comentarioSeleccionado ? 1 : 0.6 }}>
+          {comentarioSeleccionado || "Selecciona un punto del gráfico para ver el comentario."}
+        </p>
       </div>
 
       <style>{`

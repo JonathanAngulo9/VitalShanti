@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import banner from '/src/images/banner.png';
 import VerRutina from './MiRutina';
 import VerSesiones from './RegistrarSesion';
+import GraficoProgreso from './VerProgresoPaciente'; // Asegúrate que este sea el nombre correcto
 
 function DashboardPaciente() {
   const [vistaActual, setVistaActual] = useState('rutinas');
@@ -19,6 +20,21 @@ function DashboardPaciente() {
         return <VerSesiones />;
       case 'rutinas':
         return <VerRutina />;
+      case 'progreso':
+        return (
+          <div className="d-flex justify-content-center" style={{ padding: '30px' }}>
+            <div style={{
+              maxWidth: '700px',
+              width: '100%',
+              padding: '20px',
+              boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+              borderRadius: '10px',
+              backgroundColor: '#ffffff'
+            }}>
+              <GraficoProgreso pacienteId={idPaciente} />
+            </div>
+          </div>
+        );
       default:
         return <p>Seleccione una opción del menú.</p>;
     }
