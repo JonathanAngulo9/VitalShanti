@@ -6,6 +6,7 @@ import DashboardPaciente from './components/paciente/DashboardPaciente';
 import DashboardInstructor from './components/instructor/DashboardInstructor';
 import RegisterInstructor from './pages/RegisterInstructor';
 import CrearRutina from "./components/instructor/CrearRutina.jsx";
+import RutaPrivada from "./pages/RutaPrivada.jsx";
 
 
 
@@ -14,8 +15,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/dashboard/paciente" element={<DashboardPaciente />} />
-        <Route path="/dashboard/instructor" element={<DashboardInstructor />} />
+        <Route path="/dashboard/paciente" element={<RutaPrivada> <DashboardPaciente /> </RutaPrivada>} />
+        <Route path="/dashboard/instructor" element={<RutaPrivada> <DashboardInstructor /> </RutaPrivada>} />
         <Route path="/register/instructor" element={<RegisterInstructor />} />
           <Route path="/dashboard/instructor/crear-rutina" element={<CrearRutina />} />
       </Routes>
