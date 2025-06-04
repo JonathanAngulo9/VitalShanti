@@ -44,7 +44,7 @@ function RegisterPaciente({ onRegistroExitoso }) {
       const data = await res.json();
 
       if (data.success) {
-        setSuccess('Registro exitoso' + 'Redirigiendo a gestión de pacientes...');
+        setSuccess('Registro exitoso');
         setTimeout(() => {
           if (onRegistroExitoso) onRegistroExitoso();
         }, 1500);
