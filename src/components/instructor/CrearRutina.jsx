@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {Button} from "@mui/material";
 
 const CrearRutina = () => {
     const [pacientes, setPacientes] = useState([]);
@@ -226,11 +227,19 @@ const CrearRutina = () => {
                 <div className="row">
                     <div className="col-6">
                         <h5>Posturas disponibles</h5>
-                        <ul className="list-group" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                        <ul className="list-group" style={{maxHeight: '300px', overflowY: 'auto'}}>
                             {posturas.map(postura => (
-                                <li key={postura.id} className="list-group-item d-flex justify-content-between align-items-center">
+                                <li key={postura.id}
+                                    className="list-group-item d-flex justify-content-between align-items-center">
                                     {postura.nameEs}
-                                    <button type="button" className="btn btn-sm btn-primary" onClick={() => agregarPostura(postura)}>Agregar</button>
+                                    <Button
+                                        variant="contained"
+                                        size="small"
+                                        onClick={() => agregarPostura(postura)}
+                                        style={{backgroundColor: '#A88BEB', color: 'white'}}
+                                    >
+                                        AGREGAR
+                                    </Button>
                                 </li>
                             ))}
                         </ul>
@@ -239,12 +248,13 @@ const CrearRutina = () => {
                     <div className="col-6">
                         <h5>Posturas seleccionadas</h5>
                         {form.posturasSeleccionadas.length === 0 && <p>No hay posturas seleccionadas</p>}
-                        <ul className="list-group" style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                            {form.posturasSeleccionadas.map(({ posturaId, orden, duracion }) => {
+                        <ul className="list-group" style={{maxHeight: '300px', overflowY: 'auto'}}>
+                            {form.posturasSeleccionadas.map(({posturaId, orden, duracion}) => {
                                 const postura = posturas.find(p => p.id === posturaId);
                                 if (!postura) return null;
                                 return (
-                                    <li key={posturaId} className="list-group-item d-flex justify-content-between align-items-center">
+                                    <li key={posturaId}
+                                        className="list-group-item d-flex justify-content-between align-items-center">
                                         <div>
                                             <strong>{orden}.</strong> {postura.nameEs}
                                         </div>
@@ -252,13 +262,15 @@ const CrearRutina = () => {
                                             <input
                                                 type="number"
                                                 min="1"
-                                                max="600"
+                                                max="10"
                                                 value={duracion}
                                                 onChange={e => cambiarDuracion(posturaId, e.target.value)}
-                                                style={{ width: '70px' }}
+                                                style={{width: '70px'}}
                                                 title="Duración en minutos"
                                             />
-                                            <button type="button" className="btn btn-sm btn-danger ms-2" onClick={() => quitarPostura(posturaId)}>Quitar</button>
+                                            <button type="button" className="btn btn-sm btn-danger ms-2"
+                                                    onClick={() => quitarPostura(posturaId)}>QUITAR
+                                            </button>
                                         </div>
                                     </li>
                                 );
@@ -266,13 +278,12 @@ const CrearRutina = () => {
                         </ul>
                     </div>
                 </div>
-
-                <button type="submit" className="btn btn-success mt-3">Crear Rutina</button>
+                <button type="submit" className="btn custom-btn w-100 mt-5">CREAR RUTINA</button>
             </form>
 
             {rutinaActiva && (
                 <div className="mt-5">
-                    <h3>Rutina activa creada</h3>
+                <h3>Rutina activa creada</h3>
                     <p><strong>Nombre:</strong> {rutinaActiva.name}</p>
                     <p><strong>Sesiones recomendadas:</strong> {rutinaActiva.recommendedSessions}</p>
                     <h5>Posturas:</h5>
