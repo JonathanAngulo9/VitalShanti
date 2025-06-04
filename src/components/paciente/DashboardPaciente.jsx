@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import banner from '/src/images/banner.png';
 import VerRutina from './MiRutina';
-import VerSesiones from './RegistrarSesion';
+import VerSesiones from './MisSesiones';
 import GraficoProgreso from './VerProgresoPaciente'; // Asegúrate que este sea el nombre correcto
 
 function DashboardPaciente() {
   const [vistaActual, setVistaActual] = useState('rutinas');
-  const navigate = useNavigate(); // Necesario para redirigir al login
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user'));
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -17,7 +18,7 @@ function DashboardPaciente() {
   const renderContenido = () => {
     switch (vistaActual) {
       case 'sesion':
-        return <VerSesiones />;
+        return <VerSesiones pacienteId={user.id} />;
       case 'rutinas':
         return <VerRutina />;
       case 'progreso':
@@ -31,7 +32,7 @@ function DashboardPaciente() {
               borderRadius: '10px',
               backgroundColor: '#ffffff'
             }}>
-              <GraficoProgreso pacienteId={idPaciente} />
+              <GraficoProgreso pacienteId={user.id} />
             </div>
           </div>
         );
@@ -58,6 +59,12 @@ function DashboardPaciente() {
               className={`nav-link btn btn-link text-start text-white ${vistaActual === 'sesion' ? 'fw-bold' : ''}`}
             >
               📋 Ver Sesiones
+            </button>
+            <button
+              onClick={() => setVistaActual('progreso')}
+              className={`nav-link btn btn-link text-start text-white ${vistaActual === 'progreso' ? 'fw-bold' : ''}`}
+            >
+              🚀 Mi progreso
             </button>
           </nav>
         </div>

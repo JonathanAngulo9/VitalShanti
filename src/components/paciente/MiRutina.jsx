@@ -8,6 +8,8 @@ const painLevels = [
   { id: 5, label: "Máximo dolor/molestia" },
 ];
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function EstadoRutina({ series, onStartSession }) {
   return (
     <div className="container rutina-card">
@@ -36,7 +38,7 @@ function ConfiguracionInicial({ onStart, seriesId }) {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/session-logs", {
+      const response = await fetch(`${API_URL}/session-logs`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -222,7 +224,7 @@ function FinalizacionSesion({ sessionId, onFinish }) {
 
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:3000/api/session-logs/${sessionId}`, {
+      const response = await fetch(`${API_URL}/session-logs/${sessionId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -299,7 +301,7 @@ export default function MiRutina() {
       setLoading(true);
       const user = JSON.parse(localStorage.getItem("user"));
       const pacienteId = user?.id || 2;
-      const res = await fetch(`http://localhost:3000/api/pacientes/rutina-activa/${pacienteId}`);
+      const res = await fetch(`${API_URL}/pacientes/rutina-activa/${pacienteId}`);
       if (!res.ok) throw new Error("Error al cargar serie");
       const data = await res.json();
       setSeries(data);

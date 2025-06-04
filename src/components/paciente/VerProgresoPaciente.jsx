@@ -7,7 +7,7 @@ import {
   CartesianGrid
 } from 'recharts';
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function formatFechaCompleta(fecha) {
   const [year, month, day] = fecha.split('-');
@@ -55,10 +55,24 @@ export default function GraficoProgreso({ pacienteId }) {
   }, [pacienteId]);
 
   const handleClickDato = (data) => {
-    if (data && data.activePayload && data.activePayload[0]) {
+    if (data?.activePayload?.[0]) {
       const punto = data.activePayload[0].payload;
       setComentarioSeleccionado(punto.comentario || "(Sin comentario)");
     }
+  };
+
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload?.length) {
+      const dato = payload[0]?.payload;
+      return (
+        <div style={{ backgroundColor: 'white', border: '1px solid #ccc', padding: '10px' }}>
+          <p><strong>Fecha:</strong> {formatFechaCompleta(dato.fechaOriginal)}</p>
+          <p><strong>Antes:</strong> {dato.AntesTexto}</p>
+          <p><strong>Después:</strong> {dato.DespuesTexto}</p>
+        </div>
+      );
+    }
+    return null;
   };
 
   if (error) {
@@ -80,20 +94,6 @@ export default function GraficoProgreso({ pacienteId }) {
       </div>
     );
   }
-
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      const dato = payload[0]?.payload;
-      return (
-        <div style={{ backgroundColor: 'white', border: '1px solid #ccc', padding: '10px' }}>
-          <p><strong>Fecha:</strong> {formatFechaCompleta(dato.fechaOriginal)}</p>
-          <p><strong>Antes:</strong> {dato.AntesTexto}</p>
-          <p><strong>Después:</strong> {dato.DespuesTexto}</p>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div>
@@ -149,7 +149,6 @@ export default function GraficoProgreso({ pacienteId }) {
         </span>
       </div>
 
-      {/* Espacio siempre visible para comentarios */}
       <div style={{
         marginTop: '20px',
         padding: '10px',

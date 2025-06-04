@@ -8,9 +8,8 @@ import InstructorDashboard from './VerProgreso';
 
 function DashboardInstructor() {
   const [vistaActual, setVistaActual] = useState("pacientes_lista");
+  const navigate = useNavigate();
 
-  // Obtener el ID del instructor desde localStorage (puedes ajustar según tu lógica)
-  // Para pruebas, si no hay valor, se usa "1" como valor por defecto
   const idInstructor = localStorage.getItem("idInstructor") || 1;
 
   const handleRegistroExitoso = () => {
@@ -18,10 +17,10 @@ function DashboardInstructor() {
   };
 
   const logout = () => {
-    console.log("Logout clicked"); // Para validar que se hace clic en el botón
-    localStorage.removeItem("token"); // Elimina el token
-    console.log("Token eliminado"); // Para validar que se eliminó el token
-    navigate("/"); // Redirige a login
+    console.log("Logout clicked");
+    localStorage.removeItem("token");
+    console.log("Token eliminado");
+    navigate("/");
   };
 
   const renderContenido = () => {
@@ -30,9 +29,9 @@ function DashboardInstructor() {
         return <GestionPacientes vista="lista" />;
       case "pacientes_crear":
         return <RegisterPaciente onRegistroExitoso={handleRegistroExitoso} />;
-      case 'rutinas':
+      case "rutinas":
         return <CrearRutina />;
-      case 'progreso':
+      case "progreso":
         return (
           <div className="d-flex justify-content-center" style={{ padding: '30px' }}>
             <div style={{
@@ -54,56 +53,48 @@ function DashboardInstructor() {
 
   return (
     <div className="d-flex position-absolute top-0 start-0 w-100" style={{ height: '100vh' }}>
-      {/* Zona Roja - Navbar Lateral */}
-      <div className="bg-dark text-white p-3" style={{ width: '250px' }}>
-        <h4>Instructor</h4>
-        <nav className="nav flex-column mt-4">
+      {/* Sidebar lateral */}
+      <div className="bg-dark text-white d-flex flex-column justify-content-between p-3" style={{ width: '250px' }}>
+        <div>
+          <h4>Instructor</h4>
+          <nav className="nav flex-column mt-4">
+            <button
+              onClick={() => setVistaActual("pacientes_lista")}
+              className="nav-link text-white btn btn-link text-start"
+            >
+              📋 Gestión Pacientes
+            </button>
+            <button
+              onClick={() => setVistaActual("pacientes_crear")}
+              className="nav-link text-white btn btn-link text-start ms-3"
+            >
+              ➕ Añadir Paciente
+            </button>
+            <button
+              onClick={() => setVistaActual('rutinas')}
+              className={`nav-link btn btn-link text-start text-white ${vistaActual === 'rutinas' ? 'fw-bold' : ''}`}
+            >
+              📋 Crear Rutinas
+            </button>
+            <button
+              onClick={() => setVistaActual('progreso')}
+              className={`nav-link btn btn-link text-start text-white ${vistaActual === 'progreso' ? 'fw-bold' : ''}`}
+            >
+              📈 Ver Progreso
+            </button>
+          </nav>
+        </div>
+
+        {/* Botón de salir */}
+        <div className="border-top pt-3">
           <button
-            onClick={() => setVistaActual("pacientes_lista")}
-            className="nav-link text-white btn btn-link text-start"
+            onClick={logout}
+            className="nav-link text-white btn btn-link text-start w-100"
           >
-            📋 Gestión Pacientes
+            🚪 Salir
           </button>
-          <button
-            onClick={() => setVistaActual("pacientes_crear")}
-            className="nav-link text-white btn btn-link text-start ms-3"
-          >
-            ➕ Añadir Paciente
-          </button>
-          <button
-            onClick={() => setVistaActual('rutinas')}
-            className={`nav-link btn btn-link text-start text-white ${vistaActual === 'rutinas' ? 'fw-bold' : ''}`}
-          >
-            📋 Crear Rutinas
-          </button>
-          <button
-            onClick={() => setVistaActual('progreso')}
-            className={`nav-link btn btn-link text-start text-white ${vistaActual === 'progreso' ? 'fw-bold' : ''}`}
-          >
-            📈 Ver Progreso
-          </button>
-        </nav>
+        </div>
       </div>
-
-        {/* Botón de salir al fondo */}
-        <div className="mt-4 pt-4 border-top">
-          <button
-            onClick={logout}
-            className="nav-link text-white btn btn-link text-start w-100"
-          >
-            🚪 Salir
-          </button>
-        </div>
-
-        {/* Botón de salir al fondo */}
-        <div className="mt-4 pt-4 border-top">
-          <button
-            onClick={logout}
-            className="nav-link text-white btn btn-link text-start w-100"
-          >
-            🚪 Salir
-          </button>
-        </div>
 
       {/* Contenido principal */}
       <div className="flex-grow-1 d-flex flex-column">
