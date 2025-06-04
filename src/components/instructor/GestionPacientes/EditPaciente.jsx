@@ -11,6 +11,8 @@ export default function EditPaciente({ paciente, modo, open, onSave, onCancel })
         password: "",
     });
 
+    const [errors, setErrors] = useState({});
+
     useEffect(() => {
         if (paciente && modo === "editar") {
             setFormData({ ...paciente, password: "" });
@@ -24,6 +26,7 @@ export default function EditPaciente({ paciente, modo, open, onSave, onCancel })
                 password: "",
             });
         }
+        setErrors({});
     }, [paciente, modo]);
 
     const handleChange = (e) => {
@@ -34,8 +37,30 @@ export default function EditPaciente({ paciente, modo, open, onSave, onCancel })
         }));
     };
 
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!formData.firstName.trim()) newErrors.firstName = "El nombre es requerido.";
+        if (!formData.lastName.trim()) newErrors.lastName = "El apellido es requerido.";
+
+        if (!formData.email.trim()) {
+            newErrors.email = "El correo es requerido.";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            newErrors.email = "Formato de correo inválido.";
+        }
+
+        if (!formData.phone.trim()) newErrors.phone = "El teléfono es requerido.";
+        if (!formData.identification.trim()) newErrors.identification = "La identificación es requerida.";
+        if (modo === "crear" && !formData.password.trim()) newErrors.password = "La contraseña es requerida.";
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleSave = () => {
-        onSave(formData);
+        if (validateForm()) {
+            onSave(formData);
+        }
     };
 
     return (
@@ -54,6 +79,8 @@ export default function EditPaciente({ paciente, modo, open, onSave, onCancel })
                             fullWidth
                             variant="outlined"
                             margin="dense"
+                            error={!!errors.firstName}
+                            helperText={errors.firstName}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -65,6 +92,8 @@ export default function EditPaciente({ paciente, modo, open, onSave, onCancel })
                             fullWidth
                             variant="outlined"
                             margin="dense"
+                            error={!!errors.lastName}
+                            helperText={errors.lastName}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -77,6 +106,8 @@ export default function EditPaciente({ paciente, modo, open, onSave, onCancel })
                             fullWidth
                             variant="outlined"
                             margin="dense"
+                            error={!!errors.email}
+                            helperText={errors.email}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -88,6 +119,8 @@ export default function EditPaciente({ paciente, modo, open, onSave, onCancel })
                             fullWidth
                             variant="outlined"
                             margin="dense"
+                            error={!!errors.phone}
+                            helperText={errors.phone}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -99,6 +132,8 @@ export default function EditPaciente({ paciente, modo, open, onSave, onCancel })
                             fullWidth
                             variant="outlined"
                             margin="dense"
+                            error={!!errors.identification}
+                            helperText={errors.identification}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -112,6 +147,8 @@ export default function EditPaciente({ paciente, modo, open, onSave, onCancel })
                             variant="outlined"
                             margin="dense"
                             disabled={modo === "editar"}
+                            error={!!errors.password}
+                            helperText={modo === "crear" ? errors.password : ""}
                         />
                     </Grid>
                 </Grid>
@@ -123,7 +160,8 @@ export default function EditPaciente({ paciente, modo, open, onSave, onCancel })
                 <Button
                     onClick={handleSave}
                     variant="contained"
-                    style={{ backgroundColor: '#A88BEB', color: 'white' }}>
+                    style={{ backgroundColor: '#A88BEB', color: 'white' }}
+                >
                     Guardar
                 </Button>
             </DialogActions>
