@@ -85,6 +85,26 @@ function DashboardInstructor() {
         </nav>
       </div>
 
+        {/* Botón de salir al fondo */}
+        <div className="mt-4 pt-4 border-top">
+          <button
+            onClick={logout}
+            className="nav-link text-white btn btn-link text-start w-100"
+          >
+            🚪 Salir
+          </button>
+        </div>
+
+        {/* Botón de salir al fondo */}
+        <div className="mt-4 pt-4 border-top">
+          <button
+            onClick={logout}
+            className="nav-link text-white btn btn-link text-start w-100"
+          >
+            🚪 Salir
+          </button>
+        </div>
+
       {/* Contenido principal */}
       <div className="flex-grow-1 d-flex flex-column">
         <div className="p-3 bg-light border-bottom text-center">
