@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import GraficoProgreso from '../paciente/VerProgresoPaciente';
 
 // URL base para la API
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+const API_URL = import.meta.env.VITE_API_URL ;
 
 export default function InstructorDashboard({ instructorId }) {
   const [pacientes, setPacientes] = useState([]);
