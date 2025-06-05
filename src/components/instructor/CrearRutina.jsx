@@ -76,7 +76,7 @@ const CrearRutina = () => {
         setError('');
         setForm(prev => ({
             ...prev,
-            posturasSeleccionadas: [...prev.posturasSeleccionadas, { posturaId: postura.id, orden: prev.posturasSeleccionadas.length + 1, duracion: 60 }],
+            posturasSeleccionadas: [...prev.posturasSeleccionadas, { posturaId: postura.id, orden: prev.posturasSeleccionadas.length + 1, duracion: 1 }],
         }));
     };
 
@@ -91,7 +91,7 @@ const CrearRutina = () => {
     const cambiarDuracion = (posturaId, duracion) => {
         let dur = Number(duracion);
         if (dur < 1) dur = 1;
-        if (dur > 600) dur = 600;
+        if (dur > 10) dur = 10;
 
         setForm(prev => ({
             ...prev,
@@ -111,7 +111,7 @@ const CrearRutina = () => {
             return;
         }
         if (form.posturasSeleccionadas.length < 1) {
-            setError('Debes seleccionar al menos 1 postura');
+            setError('Debes seleccionar al menos 12 posturas');
             return;
         }
 
@@ -127,9 +127,9 @@ const CrearRutina = () => {
             const token = localStorage.getItem('token');
             const res = await fetch(`${API_URL}/instructor/rutinas`, {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` 
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(payload),
             });
@@ -223,7 +223,7 @@ const CrearRutina = () => {
                     />
                 </div>
 
-                <h4>Selecciona posturas (mínimo 1)</h4>
+                <h4>Selecciona posturas (mínimo 12)</h4>
                 <div className="row">
                     <div className="col-6">
                         <h5>Posturas disponibles</h5>
@@ -262,12 +262,13 @@ const CrearRutina = () => {
                                             <input
                                                 type="number"
                                                 min="1"
-                                                max="10"
+                                                max="600"
                                                 value={duracion}
                                                 onChange={e => cambiarDuracion(posturaId, e.target.value)}
                                                 style={{width: '70px'}}
                                                 title="Duración en minutos"
                                             />
+                                            <span> minutos</span>
                                             <button type="button" className="btn btn-sm btn-danger ms-2"
                                                     onClick={() => quitarPostura(posturaId)}>QUITAR
                                             </button>
@@ -283,11 +284,11 @@ const CrearRutina = () => {
 
             {rutinaActiva && (
                 <div className="mt-5">
-                <h3>Rutina activa creada</h3>
+                    <h3>Rutina activa creada</h3>
                     <p><strong>Nombre:</strong> {rutinaActiva.name}</p>
                     <p><strong>Sesiones recomendadas:</strong> {rutinaActiva.recommendedSessions}</p>
                     <h5>Posturas:</h5>
-                    {rutinaActiva.postures && rutinaActiva.postures.length > 0 ? (
+                    {rutinaActiva.postures && rutinaActiva.postures.length > 11 ? (
                         <ol>
                             {rutinaActiva.postures.map((p, i) => {
                                 const postura = posturas.find(post => post.id === p.postureId);
