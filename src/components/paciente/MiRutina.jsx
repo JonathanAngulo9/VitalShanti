@@ -152,7 +152,6 @@ function EjecucionSerie({ series, sessionId, onComplete }) {
         {String(timeLeft % 60).padStart(2, "0")}
       </p>
 
-
       <div className="rutina-controls d-flex flex-wrap justify-content-center mt-3">
         <button className="btn btn-outline-primary m-1" onClick={() => setIsRunning(!isRunning)}>
           {isRunning ? "Pausar" : "Reanudar"}
@@ -306,7 +305,7 @@ export default function MiRutina() {
       if (!res.ok) {
         // Verifica si tiene una serie activa
         if (data.message === "El paciente no tiene una serie activa") {
-          setSeries(null); 
+          setSeries(null);
         } else {
           throw new Error(data.message || "Error al cargar serie");
         }
@@ -357,13 +356,13 @@ export default function MiRutina() {
     );
   }
 
-if (!series) {
-  return (
-    <div className="rutina-card text-center">
-      <p className="rutina-subtitle">No tienes una serie activa asignada ¡Contacta con tu instructor!</p>
-    </div>
-  );
-}
+  if (!series) {
+    return (
+      <div className="rutina-card text-center">
+        <p className="rutina-subtitle">No tienes una serie activa asignada ¡Contacta con tu instructor!</p>
+      </div>
+    );
+  }
 
   return (
     <>
