@@ -6,10 +6,10 @@ function MisSesiones() {
   const [sesiones, setSesiones] = useState([]);
   const [error, setError] = useState(null);
 
-  const pacienteId = localStorage.getItem("idPaciente"); // Asegúrate de guardar esto en login
+  const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
-    fetch(`${API_URL}/pacientes/sesiones/${pacienteId}`)
+    fetch(`${API_URL}/pacientes/sesiones/${user.id}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -21,7 +21,7 @@ function MisSesiones() {
       .catch(() => {
         setError("Error al conectar con el servidor.");
       });
-  }, [pacienteId]);
+  }, []);
 
   if (error) {
     return <div className="alert alert-danger text-center">{error}</div>;
