@@ -302,9 +302,17 @@ export default function MiRutina() {
       const user = JSON.parse(localStorage.getItem("user"));
       const pacienteId = user?.id || 2;
       const res = await fetch(`${API_URL}/pacientes/rutina-activa/${pacienteId}`);
-      if (!res.ok) throw new Error("Error al cargar serie");
       const data = await res.json();
-      setSeries(data);
+      if (!res.ok) {
+        // Verifica si tiene una serie activa
+        if (data.message === "El paciente no tiene una serie activa") {
+          setSeries(null); 
+        } else {
+          throw new Error(data.message || "Error al cargar serie");
+        }
+      } else {
+        setSeries(data);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -349,13 +357,13 @@ export default function MiRutina() {
     );
   }
 
-  if (!series) {
-    return (
-      <div className="container rutina-card text-center">
-        <p>No tienes una serie activa asignada.</p>
-      </div>
-    );
-  }
+if (!series) {
+  return (
+    <div className="rutina-card text-center">
+      <p className="rutina-subtitle">No tienes una serie activa asignada ¡Contacta con tu instructor!</p>
+    </div>
+  );
+}
 
   return (
     <>
