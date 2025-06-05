@@ -110,7 +110,7 @@ const CrearRutina = () => {
             setError('Completa todos los campos obligatorios');
             return;
         }
-        if (form.posturasSeleccionadas.length < 1) {
+        if (form.posturasSeleccionadas.length < 12) {
             setError('Debes seleccionar al menos 12 posturas');
             return;
         }
