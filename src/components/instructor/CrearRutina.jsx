@@ -281,29 +281,6 @@ const CrearRutina = () => {
                 </div>
                 <button type="submit" className="btn custom-btn w-100 mt-5">CREAR RUTINA</button>
             </form>
-
-            {rutinaActiva && (
-                <div className="mt-5">
-                    <h3>Rutina activa creada</h3>
-                    <p><strong>Nombre:</strong> {rutinaActiva.name}</p>
-                    <p><strong>Sesiones recomendadas:</strong> {rutinaActiva.recommendedSessions}</p>
-                    <h5>Posturas:</h5>
-                    {rutinaActiva.postures && rutinaActiva.postures.length > 11 ? (
-                        <ol>
-                            {rutinaActiva.postures.map((p, i) => {
-                                const postura = posturas.find(post => post.id === p.postureId);
-                                return (
-                                    <li key={i}>
-                                        {postura?.nameEs || 'Postura no encontrada'} - Duración: {p.durationMinutes} minutos - Orden: {p.order}
-                                    </li>
-                                );
-                            })}
-                        </ol>
-                    ) : (
-                        <p>No hay posturas en la rutina creada</p>
-                    )}
-                </div>
-            )}
         </div>
     );
 };
