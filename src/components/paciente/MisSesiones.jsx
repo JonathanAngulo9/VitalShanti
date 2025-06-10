@@ -58,8 +58,8 @@ function MisSesiones() {
                     <td>{fecha}</td>
                     <td>{inicio}</td>
                     <td>{fin}</td>
-                    <td>{`${sesion.painBefore.level} - ${sesion.painBefore.description}`}</td>
-                    <td>{`${sesion.painAfter.level} - ${sesion.painAfter.description}`}</td>
+                    <td>{sesion.painBefore?.name || "N/A"}</td>
+                    <td>{sesion.painAfter?.name || "N/A"}</td>
                     <td>{sesion.pauses}</td>
                     <td>{sesion.effectiveMinutes}</td>
                     <td>{sesion.comment || "(sin comentario)"}</td>
@@ -67,6 +67,7 @@ function MisSesiones() {
                 );
               })}
             </tbody>
+
           </table>
         </div>
       )}

@@ -28,7 +28,7 @@ function EstadoRutina({ series, onStartSession }) {
   );
 }
 
-function ConfiguracionInicial({ onStart, seriesId }) {
+function ConfiguracionInicial({ onStart, patientSeriesId }) {
   const [painStart, setPainStart] = useState("");
 
   const handleStart = async () => {
@@ -42,7 +42,7 @@ function ConfiguracionInicial({ onStart, seriesId }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          patientSeriesId: seriesId,
+          patientSeriesId: patientSeriesId,
           painBeforeId: Number(painStart),
           startedAt: new Date().toISOString(),
         }),
@@ -185,15 +185,22 @@ function EjecucionSerie({ series, sessionId, onComplete }) {
       </div>
 
       <Modal title="Video explicativo" show={showVideo} onClose={() => setShowVideo(false)}>
-        <iframe
-          width="100%"
-          height="400"
-          src={posture.video}
-          title="Video explicativo"
-          frameBorder="0"
-          allowFullScreen
-        ></iframe>
+        {posture.video ? (
+          <iframe
+            width="100%"
+            height="400"
+            src={posture.video}
+            title="Video explicativo"
+            frameBorder="0"
+            allowFullScreen
+          ></iframe>
+        ) : (
+          <div className="text-center p-4">
+            <p>No hay video disponible para esta postura</p>
+          </div>
+        )}
       </Modal>
+
       <Modal title="Instrucciones" show={showInstructions} onClose={() => setShowInstructions(false)}>
         <p>{posture.instructions}</p>
       </Modal>
@@ -368,7 +375,7 @@ export default function MiRutina() {
     <>
       {fase === "estadoRutina" && <EstadoRutina series={series} onStartSession={handleStartSession} />}
       {fase === "configuracionInicial" && (
-        <ConfiguracionInicial seriesId={series.seriesId} onStart={handleSessionStarted} />
+        <ConfiguracionInicial patientSeriesId={series.patientSeriesId} onStart={handleSessionStarted} />
       )}
       {fase === "ejecucionSerie" && (
         <EjecucionSerie series={series} sessionId={sessionId} onComplete={handleExecutionComplete} />
