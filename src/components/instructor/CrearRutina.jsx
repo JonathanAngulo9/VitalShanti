@@ -223,7 +223,7 @@ const CrearRutina = () => {
                     />
                 </div>
 
-                <h4>Selecciona posturas (mínimo 12)</h4>
+                <h4>Selecciona posturas (mínimo 6)</h4>
                 <div className="row">
                     <div className="col-6">
                         <h5>Posturas disponibles</h5>
