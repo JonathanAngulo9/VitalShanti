@@ -118,6 +118,14 @@ function EjecucionSerie({ series, sessionId, onComplete }) {
   const posture = series.postures[currentIndex];
 
   useEffect(() => {
+    if (showVideo || showInstructions || showBenefits || showModifications || showWarnings) {
+      setIsRunning(false);
+    } else {
+      setIsRunning(true);
+    }
+  }, [showVideo, showInstructions, showBenefits, showModifications, showWarnings]);
+
+  useEffect(() => {
     if (isRunning && timeLeft > 0) {
       timerRef.current = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
     } else if (timeLeft === 0 && isRunning) {
@@ -132,6 +140,11 @@ function EjecucionSerie({ series, sessionId, onComplete }) {
     }
     return () => clearTimeout(timerRef.current);
   }, [isRunning, timeLeft, currentIndex, series.postures, onComplete, sessionId]);
+
+  const openModal = (setModal) => {
+    setIsRunning(false);
+    setModal(true);
+  };
 
   return (
     <div className="container rutina-card text-center">
@@ -156,7 +169,7 @@ function EjecucionSerie({ series, sessionId, onComplete }) {
         <button className="btn btn-outline-primary m-1" onClick={() => setIsRunning(!isRunning)}>
           {isRunning ? "Pausar" : "Reanudar"}
         </button>
-        <button className="youtube-btn m-1" onClick={() => setShowVideo(true)}>
+        <button className="youtube-btn m-1" onClick={() => openModal(setShowVideo)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -170,21 +183,21 @@ function EjecucionSerie({ series, sessionId, onComplete }) {
           Ver Video
         </button>
 
-        <button className="btn btn-outline-secondary m-1" onClick={() => setShowInstructions(true)}>
+        <button className="btn btn-outline-secondary m-1" onClick={() => openModal(setShowInstructions)}>
           Instrucciones
         </button>
-        <button className="btn btn-outline-secondary m-1" onClick={() => setShowBenefits(true)}>
+        <button className="btn btn-outline-secondary m-1" onClick={() => openModal(setShowBenefits)}>
           Beneficios
         </button>
-        <button className="btn btn-outline-secondary m-1" onClick={() => setShowModifications(true)}>
+        <button className="btn btn-outline-secondary m-1" onClick={() => openModal(setShowModifications)}>
           Modificaciones
         </button>
-        <button className="btn btn-outline-secondary m-1" onClick={() => setShowWarnings(true)}>
+        <button className="btn btn-outline-secondary m-1" onClick={() => openModal(setShowWarnings)}>
           Precauciones
         </button>
       </div>
 
-      <Modal title="Video explicativo" show={showVideo} onClose={() => setShowVideo(false)}>
+      <Modal title="Video explicativo" show={showVideo} onClose={() => { setShowVideo(false); setIsRunning(true); }}>
         {posture.video ? (
           <iframe
             width="100%"
@@ -201,16 +214,29 @@ function EjecucionSerie({ series, sessionId, onComplete }) {
         )}
       </Modal>
 
-      <Modal title="Instrucciones" show={showInstructions} onClose={() => setShowInstructions(false)}>
+      <Modal title="Instrucciones" show={showInstructions} onClose={() => {
+        setShowInstructions(false);
+        setIsRunning(true);
+      }}>
         <p>{posture.instructions}</p>
       </Modal>
-      <Modal title="Beneficios" show={showBenefits} onClose={() => setShowBenefits(false)}>
+      <Modal title="Beneficios" show={showBenefits} onClose={() => {
+        setShowBenefits(false);
+        setIsRunning(true);
+      }}>
         <p>{posture.benefits}</p>
       </Modal>
-      <Modal title="Modificaciones" show={showModifications} onClose={() => setShowModifications(false)}>
+      <Modal title="Modificaciones" show={showModifications} onClose={() => {
+        setShowModifications(false);
+        setIsRunning(true);
+      }}>
         <p>{posture.modifications}</p>
       </Modal>
-      <Modal title="Precauciones" show={showWarnings} onClose={() => setShowWarnings(false)}>
+      <Modal title="Precauciones" show={showWarnings} onClose={() => {
+        setShowWarnings(false);
+        setIsRunning(true);
+      }}
+      >
         <p>{posture.warnings}</p>
       </Modal>
     </div>
