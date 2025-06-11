@@ -36,5 +36,37 @@ El proyecto sera visible en 'http://localhost:5173'
 
 'http://localhost:3000/api'
 
+### Estructura del proyecto 
+src/
+│
+├── assets/                     # Recursos estáticos (íconos, fuentes, etc.)
+├── components/                 # Componentes reutilizables
+│   ├── instructor/             # Componentes específicos para instructores
+│   │   ├── CrearRutina.jsx
+│   │   ├── DashboardInstructor.jsx
+│   │   ├── DashboardProgresoInstructor.jsx
+│   │   ├── GestionPacientes.jsx
+│   │   ├── SidebarInstructor.jsx
+│   │   └── VerProgreso.jsx
+│   │
+│   └── paciente/               # Componentes específicos para pacientes
+│       ├── DashboardPaciente.jsx
+│       ├── MiRutina.jsx
+│       ├── MisSesiones.jsx
+│       ├── SidebarPaciente.jsx
+│       └── VerProgresoPaciente.jsx
+│
+├── images/                     # Imágenes utilizadas en la interfaz
+│
+├── pages/                      # Páginas del sistema (Login, Registro, etc.)
+│   ├── Login.jsx
+│   ├── RegisterInstructor.jsx
+│   └── RutaPrivada.jsx
+│
+├── App.jsx                     # Componente principal
+├── index.css                   # Estilos base globales
+├── App.css                     # Estilos del componente App
+└── main.jsx                    # Punto de entrada del proyecto
+
 ## Notas:
 Las imagenes deben ser incluidas en "src/images/"
