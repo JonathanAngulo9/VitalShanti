@@ -23,18 +23,14 @@ function Login() {
       const data = await res.json();
 
       if (data.success) {
-        // Guardar token o user en localStorage o contexto
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
 
-        // Redirigir en base al rol del usuario
         if (data.user.role === "Instructor") {
           navigate("/dashboard/instructor");
         } else if (data.user.role === "Paciente") {
           navigate("/dashboard/paciente");
         }
-
-
       } else {
         setError(data.message || 'Error en autenticación');
       }
@@ -82,10 +78,23 @@ function Login() {
 
           <button type="submit" className="btn custom-btn2 w-100">Iniciar sesión</button>
         </form>
+
         <div className="mt-3 text-center">
           <small>
             ¿No tienes una cuenta? <br />
-            <a href="/register/instructor" className="text-decoration-none">Regístrate como Instructor</a> o{' '}
+            {/* Enlace que navega sin recargar */}
+            <a
+              onClick={(e) => {
+                e.preventDefault();
+                navigate('/register/instructor');
+              }}
+              href="#"
+              className="text-decoration-none"
+              style={{ cursor: 'pointer' }}
+            >
+              Regístrate como Instructor
+            </a>{' '}
+            o{' '}
             <span className="text-gray-700">si eres Paciente, solicita a tu Instructor que te registre</span>
           </small>
         </div>
