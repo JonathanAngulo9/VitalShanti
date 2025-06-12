@@ -29,7 +29,7 @@ function RegisterInstructor() {
     setSuccess('');
 
     try {
-      const res = await fetch(`${API_URL}/auth/register/instructor`, {
+      const res = await fetch(`${API_URL}/register/instructor`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
