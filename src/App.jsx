@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 // Importar las pagians
-import Login from './pages/Login';
-import DashboardPaciente from './components/paciente/DashboardPaciente';
-import DashboardInstructor from './components/instructor/DashboardInstructor';
-import RegisterInstructor from './pages/RegisterInstructor';
+import Login from './pages/Login.jsx';
+import DashboardPaciente from './components/paciente/DashboardPaciente.jsx';
+import DashboardInstructor from './components/instructor/DashboardInstructor.jsx';
+import RegisterInstructor from './pages/RegisterInstructor.jsx';
 import CrearRutina from "./components/instructor/CrearRutina.jsx";
 import RutaPrivada from "./pages/RutaPrivada.jsx";
 
