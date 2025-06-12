@@ -16,6 +16,9 @@ function RegisterInstructor() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  // 👉 Variable de entorno
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -26,7 +29,7 @@ function RegisterInstructor() {
     setSuccess('');
 
     try {
-      const res = await fetch('http://localhost:3000/api/auth/register/instructor', {
+      const res = await fetch(`${API_URL}/auth/register/instructor`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -34,10 +37,11 @@ function RegisterInstructor() {
       const data = await res.json();
 
       if (data.success) {
-        setSuccess('Registro exitoso' + 'Redirigiendo a inicio de sesión...');
+        setSuccess('Registro exitoso. Redirigiendo a inicio de sesión...');
         setTimeout(() => navigate('/'), 2000);
+      } else {
+        setError(data.message || 'Error en el registro');
       }
-      else setError(data.message);
     } catch {
       setError('Error de conexión con el servidor');
     }
