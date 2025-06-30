@@ -2,6 +2,8 @@ import React from 'react';
 import banner from '/src/images/banner.png';
 import InstructorDashboard from './VerProgreso';
 import { useParams, useNavigate } from 'react-router-dom';
+//Iconos
+import { MdArrowBack } from "react-icons/md";
 
 function DashboardProgresoInstructor() {
     const { instructorId } = useParams();
@@ -15,9 +17,10 @@ function DashboardProgresoInstructor() {
                 <nav className="nav flex-column mt-4">
                     <button
                         onClick={() => navigate(-1)}
-                        className="nav-link btn btn-link text-start text-white"
+                        className="nav-link btn btn-link text-start text-white d-flex align-items-center gap-2"
                     >
-                        🔙 Volver
+                        <MdArrowBack size={20} />
+                        Volver
                     </button>
                 </nav>
             </div>

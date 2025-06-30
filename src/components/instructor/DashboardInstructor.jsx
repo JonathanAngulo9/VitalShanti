@@ -5,6 +5,8 @@ import GestionPacientes from './GestionPacientes';
 import CrearRutina from './CrearRutina';
 import RegisterPaciente from './GestionPacientes/RegisterPaciente';
 import InstructorDashboard from './VerProgreso';
+//Iconos
+import { MdTrendingUp, MdListAlt, MdPersonAdd, MdFitnessCenter, MdLogout } from "react-icons/md"; // Material Icons
 
 function DashboardInstructor() {
   const [vistaActual, setVistaActual] = useState("pacientes_lista");
@@ -60,27 +62,35 @@ function DashboardInstructor() {
           <nav className="nav flex-column mt-4">
             <button
               onClick={() => setVistaActual("pacientes_lista")}
-              className="nav-link text-white btn btn-link text-start"
+              className="nav-link text-white btn btn-link text-start d-flex align-items-center gap-2"
             >
-              📋 Gestión Pacientes
+              <MdListAlt size={20} />
+              Gestión Pacientes
             </button>
+
             <button
               onClick={() => setVistaActual("pacientes_crear")}
-              className="nav-link text-white btn btn-link text-start ms-3"
+              className="nav-link text-white btn btn-link text-start ms-3 d-flex align-items-center gap-2"
             >
-              ➕ Añadir Paciente
+              <MdPersonAdd size={20} />
+              Añadir Paciente
             </button>
+
             <button
-              onClick={() => setVistaActual('rutinas')}
-              className={`nav-link btn btn-link text-start text-white ${vistaActual === 'rutinas' ? 'fw-bold' : ''}`}
+              onClick={() => setVistaActual("rutinas")}
+              className={`nav-link btn btn-link text-start text-white d-flex align-items-center gap-2 ${vistaActual === "rutinas" ? "fw-bold" : ""
+                }`}
             >
-              📋 Crear Rutinas
+              <MdFitnessCenter size={20} />
+              Crear Rutinas
             </button>
             <button
               onClick={() => setVistaActual('progreso')}
-              className={`nav-link btn btn-link text-start text-white ${vistaActual === 'progreso' ? 'fw-bold' : ''}`}
+              className={`nav-link btn btn-link text-start text-white d-flex align-items-center gap-2 ${vistaActual === 'progreso' ? 'fw-bold' : ''
+                }`}
             >
-              📈 Ver Progreso
+              <MdTrendingUp size={20} />
+              Ver Progreso
             </button>
           </nav>
         </div>
@@ -89,9 +99,10 @@ function DashboardInstructor() {
         <div className="border-top pt-3">
           <button
             onClick={logout}
-            className="nav-link text-white btn btn-link text-start w-100"
+            className="nav-link text-white btn btn-link text-start w-100 d-flex align-items-center gap-2"
           >
-            🚪 Salir
+            <MdLogout size={20} />
+            Salir
           </button>
         </div>
       </div>

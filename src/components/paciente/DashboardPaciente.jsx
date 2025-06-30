@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import banner from '/src/images/banner.png';
 import VerRutina from './MiRutina';
 import VerSesiones from './MisSesiones';
-import GraficoProgreso from './VerProgresoPaciente'; // Asegúrate que este sea el nombre correcto
+import GraficoProgreso from './VerProgresoPaciente';
+//Iconos
+import { MdAddTask, MdEventNote, MdTrendingUp, MdLogout } from "react-icons/md"; // Material Icons
 
 function DashboardPaciente() {
   const [vistaActual, setVistaActual] = useState('rutinas');
@@ -50,21 +52,29 @@ function DashboardPaciente() {
           <nav className="nav flex-column mt-4">
             <button
               onClick={() => setVistaActual('rutinas')}
-              className={`nav-link btn btn-link text-start text-white ${vistaActual === 'rutinas' ? 'fw-bold' : ''}`}
+              className={`nav-link btn btn-link text-start text-white d-flex align-items-center gap-2 ${vistaActual === 'rutinas' ? 'fw-bold' : ''
+                }`}
             >
-              ➕ Mis Rutinas
+              <MdAddTask size={20} />
+              Mis Rutinas
             </button>
+
             <button
               onClick={() => setVistaActual('sesion')}
-              className={`nav-link btn btn-link text-start text-white ${vistaActual === 'sesion' ? 'fw-bold' : ''}`}
+              className={`nav-link btn btn-link text-start text-white d-flex align-items-center gap-2 ${vistaActual === 'sesion' ? 'fw-bold' : ''
+                }`}
             >
-              📋 Ver Sesiones
+              <MdEventNote size={20} />
+              Ver Sesiones
             </button>
+
             <button
               onClick={() => setVistaActual('progreso')}
-              className={`nav-link btn btn-link text-start text-white ${vistaActual === 'progreso' ? 'fw-bold' : ''}`}
+              className={`nav-link btn btn-link text-start text-white d-flex align-items-center gap-2 ${vistaActual === 'progreso' ? 'fw-bold' : ''
+                }`}
             >
-              🚀 Mi progreso
+              <MdTrendingUp size={20} />
+              Mi Progreso
             </button>
           </nav>
         </div>
@@ -73,9 +83,10 @@ function DashboardPaciente() {
         <div className="mt-4 pt-4 border-top">
           <button
             onClick={logout}
-            className="nav-link text-white btn btn-link text-start w-100"
+            className="nav-link text-white btn btn-link text-start w-100 d-flex align-items-center gap-2"
           >
-            🚪 Salir
+            <MdLogout size={20} />
+            Salir
           </button>
         </div>
       </div>
