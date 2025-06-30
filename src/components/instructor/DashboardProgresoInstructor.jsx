@@ -3,7 +3,7 @@ import banner from '/src/images/banner.png';
 import InstructorDashboard from './VerProgreso';
 import { useParams, useNavigate } from 'react-router-dom';
 //Iconos
-import { MdArrowBack } from "react-icons/md";
+import { MdArrowBack, MdMenu, MdChevronLeft } from "react-icons/md";
 
 function DashboardProgresoInstructor() {
     const { instructorId } = useParams();
@@ -13,7 +13,7 @@ function DashboardProgresoInstructor() {
         <div className="d-flex position-absolute top-0 start-0 w-100" style={{ minHeight: '100vh' }}>
             {/* Menú lateral */}
             <div className="bg-dark text-white p-3" style={{ width: '250px' }}>
-                <h4>Instructor</h4>
+                {sidebarAbierto && <h4>Instructor</h4>}
                 <nav className="nav flex-column mt-4">
                     <button
                         onClick={() => navigate(-1)}

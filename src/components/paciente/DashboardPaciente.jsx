@@ -5,10 +5,11 @@ import VerRutina from './MiRutina';
 import VerSesiones from './MisSesiones';
 import GraficoProgreso from './VerProgresoPaciente';
 //Iconos
-import { MdAddTask, MdEventNote, MdTrendingUp, MdLogout } from "react-icons/md"; // Material Icons
+import { MdAddTask, MdEventNote, MdTrendingUp, MdLogout, MdMenu, MdChevronLeft } from "react-icons/md"; // Material Icons
 
 function DashboardPaciente() {
   const [vistaActual, setVistaActual] = useState('rutinas');
+  const [sidebarAbierto, setSidebarAbierto] = useState(true);
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
 
@@ -46,9 +47,15 @@ function DashboardPaciente() {
   return (
     <div className="d-flex position-absolute top-0 start-0 w-100" style={{ height: '100vh' }}>
       {/* Sidebar */}
-      <div className="bg-dark text-white p-3 d-flex flex-column justify-content-between" style={{ width: '250px' }}>
+      <div className="bg-dark text-white p-3 d-flex flex-column justify-content-between" style={{ width: sidebarAbierto ? '250px' : '80px', transition: 'width 0.3s' }}>
+        <button
+          onClick={() => setSidebarAbierto(!sidebarAbierto)}
+          className="btn btn-sm btn-outline-light w-100 mb-3 d-flex justify-content-center align-items-center"
+        >
+          {sidebarAbierto ? <MdChevronLeft size={24} /> : <MdMenu size={24} />}
+        </button>
         <div>
-          <h4>Paciente</h4>
+          {sidebarAbierto && <h4>Paciente</h4>}
           <nav className="nav flex-column mt-4">
             <button
               onClick={() => setVistaActual('rutinas')}
@@ -56,7 +63,7 @@ function DashboardPaciente() {
                 }`}
             >
               <MdAddTask size={20} />
-              Mis Rutinas
+              {sidebarAbierto && <span>Mis Rutinas</span>}
             </button>
 
             <button
@@ -65,7 +72,7 @@ function DashboardPaciente() {
                 }`}
             >
               <MdEventNote size={20} />
-              Ver Sesiones
+              {sidebarAbierto && <span>Ver Sesiones</span>}
             </button>
 
             <button
@@ -74,7 +81,7 @@ function DashboardPaciente() {
                 }`}
             >
               <MdTrendingUp size={20} />
-              Mi Progreso
+              {sidebarAbierto && <span>Mi Progreso</span>}
             </button>
           </nav>
         </div>
@@ -86,7 +93,7 @@ function DashboardPaciente() {
             className="nav-link text-white btn btn-link text-start w-100 d-flex align-items-center gap-2"
           >
             <MdLogout size={20} />
-            Salir
+            {sidebarAbierto && <span>Salir</span>}
           </button>
         </div>
       </div>

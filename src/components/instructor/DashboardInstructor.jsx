@@ -6,10 +6,11 @@ import CrearRutina from './CrearRutina';
 import RegisterPaciente from './GestionPacientes/RegisterPaciente';
 import InstructorDashboard from './VerProgreso';
 //Iconos
-import { MdTrendingUp, MdListAlt, MdPersonAdd, MdFitnessCenter, MdLogout } from "react-icons/md"; // Material Icons
+import { MdTrendingUp, MdListAlt, MdPersonAdd, MdFitnessCenter, MdLogout, MdMenu, MdChevronLeft } from "react-icons/md"; // Material Icons
 
 function DashboardInstructor() {
   const [vistaActual, setVistaActual] = useState("pacientes_lista");
+  const [sidebarAbierto, setSidebarAbierto] = useState(true);
   const navigate = useNavigate();
 
   const idInstructor = localStorage.getItem("idInstructor") || 1;
@@ -56,16 +57,22 @@ function DashboardInstructor() {
   return (
     <div className="d-flex position-absolute top-0 start-0 w-100" style={{ height: '100vh' }}>
       {/* Sidebar lateral */}
-      <div className="bg-dark text-white d-flex flex-column justify-content-between p-3" style={{ width: '250px' }}>
+      <div className="bg-dark text-white d-flex flex-column justify-content-between p-3" style={{ width: sidebarAbierto ? '250px' : '80px', transition: 'width 0.3s' }}>
+        <button
+          onClick={() => setSidebarAbierto(!sidebarAbierto)}
+          className="btn btn-sm btn-outline-light w-100 mb-3 d-flex justify-content-center align-items-center"
+        >
+          {sidebarAbierto ? <MdChevronLeft size={24} /> : <MdMenu size={24} />}
+        </button>
         <div>
-          <h4>Instructor</h4>
+          {sidebarAbierto && <h4>Instructor</h4>}
           <nav className="nav flex-column mt-4">
             <button
               onClick={() => setVistaActual("pacientes_lista")}
               className="nav-link text-white btn btn-link text-start d-flex align-items-center gap-2"
             >
               <MdListAlt size={20} />
-              Gestión Pacientes
+              {sidebarAbierto && <span>Gestión Pacientes</span>}
             </button>
 
             <button
@@ -73,7 +80,7 @@ function DashboardInstructor() {
               className="nav-link text-white btn btn-link text-start ms-3 d-flex align-items-center gap-2"
             >
               <MdPersonAdd size={20} />
-              Añadir Paciente
+              {sidebarAbierto && <span>Añadir Paciente</span>}
             </button>
 
             <button
@@ -82,7 +89,7 @@ function DashboardInstructor() {
                 }`}
             >
               <MdFitnessCenter size={20} />
-              Crear Rutinas
+              {sidebarAbierto && <span>Crear Rutinas</span>}
             </button>
             <button
               onClick={() => setVistaActual('progreso')}
@@ -90,7 +97,7 @@ function DashboardInstructor() {
                 }`}
             >
               <MdTrendingUp size={20} />
-              Ver Progreso
+              {sidebarAbierto && <span>Ver Progreso</span>}
             </button>
           </nav>
         </div>
@@ -102,7 +109,7 @@ function DashboardInstructor() {
             className="nav-link text-white btn btn-link text-start w-100 d-flex align-items-center gap-2"
           >
             <MdLogout size={20} />
-            Salir
+            {sidebarAbierto && <span>Salir</span>}
           </button>
         </div>
       </div>
