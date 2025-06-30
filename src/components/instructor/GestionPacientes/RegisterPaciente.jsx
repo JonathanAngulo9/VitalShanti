@@ -15,6 +15,14 @@ function RegisterPaciente({ onRegistroExitoso }) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  const validarCedula = (ruc) => {
+    return /^\d{10}$/.test(ruc);
+  };
+
+  const validarContrasena = (password) => {
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
+  };
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -23,6 +31,16 @@ function RegisterPaciente({ onRegistroExitoso }) {
     e.preventDefault();
     setError('');
     setSuccess('');
+
+    if (!validarCedula(form.identification)) {
+    setError('La Cedula debe tener exactamente 10 dígitos numéricos.');
+    return;
+  }
+
+  if (!validarContrasena(form.password)) {
+    setError('La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y símbolos.');
+    return;
+  }
 
     const instructor = JSON.parse(localStorage.getItem("user"));
     const instructorId = instructor?.id;

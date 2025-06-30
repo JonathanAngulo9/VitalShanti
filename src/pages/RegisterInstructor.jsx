@@ -19,6 +19,16 @@ function RegisterInstructor() {
   // 👉 Variable de entorno
   const API_URL = import.meta.env.VITE_API_URL;
 
+  // Validar que el RUC tenga exactamente 13 dígitos numéricos
+  const validarRUC = (ruc) => {
+    return /^\d{13}$/.test(ruc);
+  };
+
+  // Validar contraseña fuerte: mínimo 8 caracteres, mayúsculas, minúsculas, números y símbolos
+  const validarContrasena = (password) => {
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
+  };
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -27,6 +37,17 @@ function RegisterInstructor() {
     e.preventDefault();
     setError('');
     setSuccess('');
+
+    // Validaciones previas
+    if (!validarRUC(form.identification)) {
+      setError('El RUC debe tener exactamente 13 dígitos numéricos.');
+      return;
+    }
+
+    if (!validarContrasena(form.password)) {
+      setError('La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y símbolos.');
+      return;
+    }
 
     try {
       const res = await fetch(`${API_URL}/auth/register/instructor`, {
