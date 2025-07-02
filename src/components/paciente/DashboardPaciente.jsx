@@ -5,17 +5,23 @@ import VerRutina from './MiRutina';
 import VerSesiones from './MisSesiones';
 import GraficoProgreso from './VerProgresoPaciente';
 //Iconos
-import { MdAddTask, MdEventNote, MdTrendingUp, MdLogout, MdMenu, MdChevronLeft } from "react-icons/md"; // Material Icons
+import { MdAddTask, MdEventNote, MdTrendingUp, MdLogout, MdMenu, MdChevronLeft, MdPlayCircle } from "react-icons/md"; // Material Icons
 
 function DashboardPaciente() {
   const [vistaActual, setVistaActual] = useState('rutinas');
   const [sidebarAbierto, setSidebarAbierto] = useState(true);
+  const [showVideo, setShowVideo] = useState(false);
+
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
 
   const logout = () => {
     localStorage.removeItem("token");
     navigate("/");
+  };
+
+  const openModal = (setter) => {
+    setter(true);
   };
 
   const renderContenido = () => {
@@ -86,6 +92,16 @@ function DashboardPaciente() {
           </nav>
         </div>
 
+        {/* Botón para abrir video */}
+        <button
+          onClick={() => openModal(setShowVideo)}
+          className="btn btn-sm btn-outline-light w-100 mb-3 d-flex justify-content-center align-items-center"
+        >
+          <MdPlayCircle size={24} />
+          {sidebarAbierto && <span className="ms-2">Ver tutorial</span>}
+        </button>
+
+
         {/* Botón de salir al fondo */}
         <div className="mt-4 pt-4 border-top">
           <button
@@ -108,6 +124,29 @@ function DashboardPaciente() {
           {renderContenido()}
         </div>
       </div>
+
+      {/* Modal de video de ayuda */}
+      {showVideo && (
+        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-lg modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Aprende a usar la plataforma como paciente</h5>
+                <button type="button" className="btn-close" onClick={() => setShowVideo(false)}></button>
+              </div>
+              <div className="modal-body">
+                <div className="ratio ratio-16x9">
+                  <iframe
+                    src="https://www.youtube.com/embed/dQw4w9WgXcQ" // REEMPLAZAR CON EL ENLACE DEL VIDEO REAL
+                    title="Video Tutorial Para Pacientes"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

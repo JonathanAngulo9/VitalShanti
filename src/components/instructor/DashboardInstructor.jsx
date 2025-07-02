@@ -6,11 +6,13 @@ import CrearRutina from './CrearRutina';
 import RegisterPaciente from './GestionPacientes/RegisterPaciente';
 import InstructorDashboard from './VerProgreso';
 //Iconos
-import { MdTrendingUp, MdListAlt, MdPersonAdd, MdFitnessCenter, MdLogout, MdMenu, MdChevronLeft } from "react-icons/md"; // Material Icons
+import { MdTrendingUp, MdListAlt, MdPersonAdd, MdFitnessCenter, MdLogout, MdMenu, MdChevronLeft, MdPlayCircle } from "react-icons/md"; // Material Icons
 
 function DashboardInstructor() {
   const [vistaActual, setVistaActual] = useState("pacientes_lista");
   const [sidebarAbierto, setSidebarAbierto] = useState(true);
+  const [showVideo, setShowVideo] = useState(false);
+
   const navigate = useNavigate();
 
   const idInstructor = localStorage.getItem("idInstructor") || 1;
@@ -25,6 +27,11 @@ function DashboardInstructor() {
     console.log("Token eliminado");
     navigate("/");
   };
+
+  const openModal = (setter) => {
+    setter(true);
+  };
+
 
   const renderContenido = () => {
     switch (vistaActual) {
@@ -64,6 +71,8 @@ function DashboardInstructor() {
         >
           {sidebarAbierto ? <MdChevronLeft size={24} /> : <MdMenu size={24} />}
         </button>
+
+
         <div>
           {sidebarAbierto && <h4>Instructor</h4>}
           <nav className="nav flex-column mt-4">
@@ -102,6 +111,16 @@ function DashboardInstructor() {
           </nav>
         </div>
 
+        {/*Botón de ayuda*/}
+        <button
+          onClick={() => openModal(setShowVideo)}
+          className="btn btn-sm btn-outline-light w-100 mb-3 d-flex justify-content-center align-items-center"
+        >
+          <MdPlayCircle size={24} />
+          {sidebarAbierto && <span className="ms-2">Ver tutorial</span>}
+
+        </button>
+
         {/* Botón de salir */}
         <div className="border-top pt-3">
           <button
@@ -124,7 +143,34 @@ function DashboardInstructor() {
           {renderContenido()}
         </div>
       </div>
+
+      {/* Modal de video de ayuda */}
+      {showVideo && (
+        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-lg modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Aprende a usar la plataforma como instructor</h5>
+                <button type="button" className="btn-close" onClick={() => setShowVideo(false)}></button>
+              </div>
+              <div className="modal-body">
+                <div className="ratio ratio-16x9">
+                  <iframe
+                    src="https://www.youtube.com/embed/dQw4w9WgXcQ" // REEMPLAZAR CON EL ENLACE DEL VIDEO REAL
+                    title="Video Tutorial Para Instructores"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
+
+
+
   );
 }
 
