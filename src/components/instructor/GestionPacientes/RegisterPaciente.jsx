@@ -9,11 +9,16 @@ function RegisterPaciente({ onRegistroExitoso }) {
     lastName: '',
     identification: '',
     phone: '',
+    age: '',
+    gender: '',
+    medicalConditions: '',
     email: '',
     password: ''
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  // 👉 Variable de entorno
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const validarCedula = (ruc) => {
     return /^\d{10}$/.test(ruc);
@@ -33,14 +38,14 @@ function RegisterPaciente({ onRegistroExitoso }) {
     setSuccess('');
 
     if (!validarCedula(form.identification)) {
-    setError('La Cedula debe tener exactamente 10 dígitos numéricos.');
-    return;
-  }
+      setError('La Cedula debe tener exactamente 10 dígitos numéricos.');
+      return;
+    }
 
-  if (!validarContrasena(form.password)) {
-    setError('La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y símbolos.');
-    return;
-  }
+    if (!validarContrasena(form.password)) {
+      setError('La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y símbolos.');
+      return;
+    }
 
     const instructor = JSON.parse(localStorage.getItem("user"));
     const instructorId = instructor?.id;
@@ -51,7 +56,7 @@ function RegisterPaciente({ onRegistroExitoso }) {
     }
 
     try {
-      const res = await fetch('http://localhost:3000/api/pacientes', {
+      const res = await fetch(`${API_URL}/auth/register/paciente`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -83,6 +88,16 @@ function RegisterPaciente({ onRegistroExitoso }) {
         <input type="text" name="lastName" placeholder="Apellidos" className="form-control mb-2" onChange={handleChange} required />
         <input type="text" name="identification" placeholder="Cédula (10 dígitos)" className="form-control mb-2" onChange={handleChange} required />
         <input type="text" name="phone" placeholder="Teléfono" className="form-control mb-2" onChange={handleChange} required />
+        <input type="number" name="age" placeholder="Edad" className="form-control mb-2" min="0" onChange={handleChange} required />
+        <select name="gender" className="form-control mb-2" onChange={handleChange} required
+        >
+          <option value="">Seleccione género</option>
+          <option value="Masculino">Masculino</option>
+          <option value="Femenino">Femenino</option>
+          <option value="Otro">Otro</option>
+          <option value="Prefiero no decir">Prefiero no decir</option>
+        </select>
+        <textarea name="medicalConditions" placeholder="Condiciones médicas (si aplica)" className="form-control mb-3" rows={4} onChange={handleChange}/>
         <input type="email" name="email" placeholder="Correo" className="form-control mb-2" onChange={handleChange} required />
         <input type="password" name="password" placeholder="Contraseña" className="form-control mb-3" onChange={handleChange} required />
         <button type="submit" className="btn custom-btn w-100">Registrarse</button>
