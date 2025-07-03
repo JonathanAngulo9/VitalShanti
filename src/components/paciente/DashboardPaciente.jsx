@@ -131,14 +131,16 @@ function DashboardPaciente() {
           <div className="modal-dialog modal-lg modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Aprende a usar la plataforma como paciente</h5>
+                <h5 className="modal-title">Aprende a usar la plataforma como instructor</h5>
                 <button type="button" className="btn-close" onClick={() => setShowVideo(false)}></button>
               </div>
               <div className="modal-body">
                 <div className="ratio ratio-16x9">
                   <iframe
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ" // REEMPLAZAR CON EL ENLACE DEL VIDEO REAL
-                    title="Video Tutorial Para Pacientes"
+                    src="https://www.youtube.com/embed/_ImDBE0vakI?autoplay=1&mute=1&rel=0"
+                    title="Video Tutorial Para Instructores"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   ></iframe>
                 </div>
@@ -147,6 +149,7 @@ function DashboardPaciente() {
           </div>
         </div>
       )}
+
     </div>
   );
 }

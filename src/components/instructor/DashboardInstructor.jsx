@@ -156,8 +156,10 @@ function DashboardInstructor() {
               <div className="modal-body">
                 <div className="ratio ratio-16x9">
                   <iframe
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ" // REEMPLAZAR CON EL ENLACE DEL VIDEO REAL
+                    src="https://www.youtube.com/embed/aPIamrMUnjw?autoplay=0"
                     title="Video Tutorial Para Instructores"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   ></iframe>
                 </div>
@@ -168,6 +170,8 @@ function DashboardInstructor() {
       )}
 
     </div>
+
+
 
 
 
