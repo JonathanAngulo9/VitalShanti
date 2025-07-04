@@ -8,6 +8,8 @@ export default function EditPaciente({ paciente, modo, open, onSave, onCancel })
         email: "",
         phone: "",
         identification: "",
+        age: "",
+        medicalConditions: "",
         password: "",
     });
 
@@ -23,6 +25,8 @@ export default function EditPaciente({ paciente, modo, open, onSave, onCancel })
                 email: "",
                 phone: "",
                 identification: "",
+                age: "",
+                medicalConditions: "",
                 password: "",
             });
         }
@@ -134,6 +138,32 @@ export default function EditPaciente({ paciente, modo, open, onSave, onCancel })
                             margin="dense"
                             error={!!errors.identification}
                             helperText={errors.identification}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            name="age"
+                            label="Edad"
+                            value={formData.age}
+                            onChange={handleChange}
+                            fullWidth
+                            variant="outlined"
+                            margin="dense"
+                            error={!!errors.age}
+                            helperText={errors.age}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            name="medicalConditions"
+                            label="Condiciones Médicas"
+                            value={formData.medicalConditions}
+                            onChange={handleChange}
+                            fullWidth
+                            variant="outlined"
+                            margin="dense"
+                            error={!!errors.medicalConditions}
+                            helperText={errors.medicalConditions}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>

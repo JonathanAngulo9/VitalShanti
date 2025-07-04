@@ -18,6 +18,15 @@ function DetailPaciente({ paciente, onClose }) {
         <Typography variant="body1">
           <strong>Teléfono:</strong> {paciente.phone}
         </Typography>
+        <Typography variant="body1">
+          <strong>Edad:</strong> {paciente.age}
+        </Typography>
+        <Typography variant="body1">
+          <strong>Género:</strong> {paciente.gender}
+        </Typography>
+        <Typography variant="body1">
+          <strong>Condiciones médicas:</strong> {paciente.medicalConditions || "Ninguna"}
+        </Typography>
       </DialogContent>
       <DialogActions>
         <Button
