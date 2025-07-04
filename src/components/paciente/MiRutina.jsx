@@ -30,31 +30,31 @@ function EstadoRutina({ series, onStartSession }) {
 
 function ConfiguracionInicial({ onStart, patientSeriesId }) {
   const [painStart, setPainStart] = useState("");
+  const [sessionData, setSessionData] = useState(null);
 
-  const handleStart = async () => {
+  const handleStart = () => {
     if (!painStart) {
       alert("Por favor selecciona la intensidad de dolor/molestia inicial.");
       return;
     }
 
-    try {
-      const response = await fetch(`${API_URL}/session-logs`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          patientSeriesId: patientSeriesId,
-          painBeforeId: Number(painStart),
-          startedAt: new Date().toISOString(),
-        }),
-      });
+    const data = {
+      patientSeriesId: patientSeriesId,
+      painBeforeId: Number(painStart),
+      startedAt: new Date().toISOString(),
+    };
 
-      if (!response.ok) throw new Error("Error al iniciar sesión");
-      const data = await response.json();
-      onStart(data.sessionId);
-    } catch (error) {
-      alert(error.message);
-    }
+    console.log("Datos listos para almacenar:", data);
+
+    setSessionData(data);
+    onStart(data);
   };
+
+
+  // Para verificar cuando se actualiza
+  useEffect(() => {
+    console.log("sessionData actualizado:", sessionData);
+  }, [sessionData]);
 
   return (
     <div className="container rutina-card">
@@ -113,6 +113,7 @@ function EjecucionSerie({ series, sessionId, onComplete }) {
   const [showBenefits, setShowBenefits] = useState(false);
   const [showModifications, setShowModifications] = useState(false);
   const [showWarnings, setShowWarnings] = useState(false);
+  const [pauseCount, setPauseCount] = useState(0);
   const timerRef = useRef(null);
 
   const posture = series.postures[currentIndex];
@@ -135,11 +136,11 @@ function EjecucionSerie({ series, sessionId, onComplete }) {
         setCurrentIndex(nextIndex);
         setTimeLeft(series.postures[nextIndex].durationMinutes * 60);
       } else {
-        onComplete(sessionId);
+        onComplete(pauseCount); 
       }
     }
     return () => clearTimeout(timerRef.current);
-  }, [isRunning, timeLeft, currentIndex, series.postures, onComplete, sessionId]);
+  }, [isRunning, timeLeft, currentIndex, series.postures, onComplete, sessionId, pauseCount]);
 
   const openModal = (setModal) => {
     setIsRunning(false);
@@ -166,9 +167,16 @@ function EjecucionSerie({ series, sessionId, onComplete }) {
       </p>
 
       <div className="rutina-controls d-flex flex-wrap justify-content-center mt-3">
-        <button className="btn btn-outline-primary m-1" onClick={() => setIsRunning(!isRunning)}>
+        <button
+          className="btn btn-outline-primary m-1"
+          onClick={() => {
+            if (isRunning) setPauseCount((prev) => prev + 1);
+            setIsRunning(!isRunning);
+          }}
+        >
           {isRunning ? "Pausar" : "Reanudar"}
         </button>
+
         <button className="youtube-btn m-1" onClick={() => openModal(setShowVideo)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -243,7 +251,7 @@ function EjecucionSerie({ series, sessionId, onComplete }) {
   );
 }
 
-function FinalizacionSesion({ sessionId, onFinish }) {
+function FinalizacionSesion({ sessionData, onFinish }) {
   const [painEnd, setPainEnd] = useState("");
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
@@ -256,13 +264,18 @@ function FinalizacionSesion({ sessionId, onFinish }) {
 
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/session-logs/${sessionId}`, {
-        method: "PATCH",
+      const response = await fetch(`${API_URL}/session-logs`, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          patientSeriesId: sessionData.patientSeriesId,
+          painBeforeId: sessionData.painBeforeId,
+          startedAt: sessionData.startedAt,
           painAfterId: Number(painEnd),
           comment: comment.trim(),
           endedAt: new Date().toISOString(),
+          pauses: sessionData.pauses,
+          effectiveMinutes: sessionData.effectiveMinutes,
         }),
       });
 
@@ -275,6 +288,7 @@ function FinalizacionSesion({ sessionId, onFinish }) {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="container rutina-card">
@@ -326,7 +340,12 @@ export default function MiRutina() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [fase, setFase] = useState("estadoRutina");
+  const [sessionData, setSessionData] = useState(null);
   const [sessionId, setSessionId] = useState(null);
+  const [pauseCount, setPauseCount] = useState(0);
+  const [effectiveTime, setEffectiveTime] = useState(0);
+
+
 
   const fetchSerie = async () => {
     try {
@@ -344,6 +363,8 @@ export default function MiRutina() {
         }
       } else {
         setSeries(data);
+        const tiempoEfectivoTotal = data.postures.reduce((total, posture) => total + (posture.durationMinutes * 60), 0);
+        setEffectiveTime(tiempoEfectivoTotal);
       }
     } catch (err) {
       setError(err.message);
@@ -357,16 +378,20 @@ export default function MiRutina() {
   }, []);
 
   const handleStartSession = () => setFase("configuracionInicial");
-  const handleSessionStarted = (newSessionId) => {
-    setSessionId(newSessionId);
+  const handleSessionStarted = (data) => {
+    setSessionData(data);
     setFase("ejecucionSerie");
   };
-  const handleExecutionComplete = () => setFase("finalizacion");
+  const handleExecutionComplete = (pauses) => {
+    setPauseCount(pauses); 
+    setFase("finalizacion");
+  };
   const handleSessionFinished = async (newSessionsCompleted) => {
     setSeries((prev) => ({ ...prev, sessionsCompleted: newSessionsCompleted }));
     await fetchSerie();
     setFase("estadoRutina");
     setSessionId(null);
+    setSessionData(null);
   };
 
   if (loading) {
@@ -404,11 +429,19 @@ export default function MiRutina() {
         <ConfiguracionInicial patientSeriesId={series.patientSeriesId} onStart={handleSessionStarted} />
       )}
       {fase === "ejecucionSerie" && (
-        <EjecucionSerie series={series} sessionId={sessionId} onComplete={handleExecutionComplete} />
+        <EjecucionSerie
+          series={series}
+          sessionId={sessionId}
+          onComplete={(pauseCount) => handleExecutionComplete(pauseCount)}
+        />
       )}
       {fase === "finalizacion" && (
-        <FinalizacionSesion sessionId={sessionId} onFinish={handleSessionFinished} />
+        <FinalizacionSesion
+          sessionData={{ ...sessionData, pauses: pauseCount, effectiveMinutes: effectiveTime }} 
+          onFinish={handleSessionFinished}
+        />
       )}
+
     </>
   );
 }
